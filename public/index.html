@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VTC</title>
+    <meta name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico">
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png?rd=4221159546" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <link href="%PUBLIC_URL%/css/fontawesome-all.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous">
+    <link href="%PUBLIC_URL%/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="%PUBLIC_URL%/css/bootstrap.min.css.map" rel="stylesheet" type="text/css">
+
+    <link href="%PUBLIC_URL%/css/lightbox.min.css" rel="stylesheet" type="text/css">
+    <!-- <link href="%PUBLIC_URL%/css/lightgallery.css" rel="stylesheet" type="text/css"> -->
+    <link href="%PUBLIC_URL%/css/menu.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/style.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/elastislide.css" type="text/css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/responsiveslides.css" type="text/css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/owl.carousel.css" type="text/css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/ken-burns.css" type="text/css">
+
+    <script src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="%PUBLIC_URL%/js/bootstrap.js"></script>
+    <script src="%PUBLIC_URL%/js/bootstrap.min.js"></script>
+    <script src="%PUBLIC_URL%/js/bootstrap.min.js.map"></script>
+    <script src="%PUBLIC_URL%/js/lightbox-plus-jquery.min.js"></script>
+    <script src="%PUBLIC_URL%/js/menu.js"></script>
+    <script src="%PUBLIC_URL%/js/jquery.elastislide.js"></script>
+    <script src="%PUBLIC_URL%/js/responsiveslides.min.js"></script>
+    <script src="%PUBLIC_URL%/js/owl.carousel.js"></script>
+    <!-- <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script> -->
+    <style type="text/css">
+        .rslides {
+            position: relative;
+            list-style: none;
+            overflow: hidden;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .gallery_bgimage {
+            height: 223px;
+        }
+
+        .gallerybox .button {
+            cursor: pointer;
+        }
+
+        .property_details {
+            width: 79%;
+        }
+        .property_details_left{
+            width: 100%;
+        }
+        .theme4 .property_details_left{
+            width: 100%;
+        }
+        .rslides li {
+            -webkit-backface-visibility: hidden;
+            position: absolute;
+            display: none;
+            width: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        .rslides li:first-child {
+            position: relative;
+            display: block;
+            float: left;
+        }
+
+        .rslides img {
+            display: block;
+            height: auto;
+            float: left;
+            width: 100%;
+            border: 0;
+        }
+
+        .owl-prev {
+            left: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff !important;
+            border: 2px solid #fff !important;
+        }
+
+        .owl-next {
+            right: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff !important;
+            border: 2px solid #fff !important;
+        }
+
+        .owl-carousel .owl-item img {
+            height: 100%;
+        }
+
+        .MuiDialogTitle-root {
+            background-color: #ffa12d !important;
+            color: aliceblue;
+        }
+
+        .imagelist [class*="col-md-4"] {
+            margin-bottom: 30px;
+
+        }
+
+        /* .gallerybox .image-holder img{
+            height:100%;
+        } */
+    </style>
+    <style type="text/css">
+        .pnlm-container {
+            width: "1200px" !important;
+        }
+    </style>
+</head>
+
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="text/javascript">
+        $(window).on('scroll', function () {
+            if ($(window).scrollTop() > 100) {
+                $('.header-box1').addClass('sticky_header animated fadeInDown');
+            } else {
+                $('.header-box1').removeClass('sticky_header animated fadeInDown');
+            }
+        });    
+    </script>
+    <script>
+        jQuery(document).ready(function () {
+            $("#cssmenu").menumaker({
+                title: "",
+                format: "multitoggle"
+            });
+            var offset = 220;
+            var duration = 500;
+            jQuery(window).scroll(function () {
+                if (jQuery(this).scrollTop() > offset) {
+                    jQuery('.back-to-top').fadeIn(duration);
+                } else {
+                    jQuery('.back-to-top').fadeOut(duration);
+                }
+            });
+
+            jQuery('.back-to-top').click(function (event) {
+                event.preventDefault();
+                jQuery('html, body').animate({ scrollTop: 0 }, duration);
+                return false;
+            })
+            $(function () {
+                // Slideshow 4
+                $("#slider4").responsiveSlides({
+                    auto: true,
+                    pager: false,
+                    nav: true,
+                    speed: 800,
+                    namespace: "callbacks",
+                    before: function () {
+                        $('.events').append("<li>before event fired.</li>");
+                    },
+                    after: function () {
+                        $('.events').append("<li>after event fired.</li>");
+                    }
+                });
+
+            });
+        });
+    </script>
+    <script>
+        jQuery("#gallery-slider1").owlCarousel({
+            lazyLoad: true,
+            loop: true,
+            margin: 20,
+            responsiveClass: true,
+            animateOut: 'fadeOut',
+            animateIn: 'fadeIn',
+            autoplay: true,
+            autoplayTimeout: 60000,
+            autoplayHoverPause: false,
+            mouseDrag: true,
+            touchDrag: true,
+            smartSpeed: 1000,
+            nav: true,
+            dots: false,
+            navText: ["<i class='far fa-chevron-left sp'></i>", "<i class='far fa-chevron-right sp'></i>"],
+            responsive: {
+                0: {
+                    items: 1
+                },
+
+                600: {
+                    items: 2
+                },
+
+                1024: {
+                    items: 3
+                },
+
+                1366: {
+                    items: 3
+                }
+            }
+        });
+    </script>
+    <script>
+        jQuery("#banner-slider").owlCarousel({
+            lazyLoad: true,
+            loop: true,
+            margin: 0,
+            responsiveClass: true,
+            animateOut: 'fadeOut',
+            animateIn: 'fadeIn',
+            autoplay: true,
+            autoplayTimeout: 3000,
+            autoplayHoverPause: false,
+            mouseDrag: true,
+            touchDrag: true,
+            smartSpeed: 1000,
+            nav: true,
+            dots: true,
+            navText: ["<i class='far fa-chevron-left sp'></i>", "<i class='far fa-chevron-right sp'></i>"],
+            responsive: {
+                0: {
+                    items: 1
+                },
+
+                600: {
+                    items: 1
+                },
+
+                1024: {
+                    items: 1
+                },
+
+                1366: {
+                    items: 1
+                }
+            }
+        });
+    </script>
+    <script>
+        function findOffset(element) {
+            var top = 0, left = 0;
+            do {
+                top += element.offsetTop || 0;
+                left += element.offsetLeft || 0;
+                element = element.offsetParent;
+            } while (element);
+
+            return {
+                top: top,
+                left: left
+            };
+        }
+
+        window.onload = function () {
+            var stickyHeader = document.getElementById('sticky');
+            console.log(stickyHeader);
+            var headerOffset = findOffset(stickyHeader);
+            console.log(headerOffset);
+
+            window.onscroll = function () {
+                // body.scrollTop is deprecated and no longer available on Firefox
+                var bodyScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+                if (bodyScrollTop > headerOffset.top) {
+                    stickyHeader.classList.add('fixed');
+                } else {
+                    stickyHeader.classList.remove('fixed');
+                }
+            };
+        };
+    </script>
+    <!-- <script src="%PUBLIC_URL%/js/lightgallery.js"></script>
+
+    <script>
+        lightGallery(document.getElementById('lightgallery'));
+    </script> -->
+
+
+</body>
+
+</html>
