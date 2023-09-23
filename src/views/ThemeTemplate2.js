@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { APIURL, APIPath } from "../CommonMethods/Fetch";
+import { APIURL, APIPath, HomePageUrl } from "../CommonMethods/Fetch";
 import {
   FacebookShareButton,
   LinkedinShareButton,
@@ -53,6 +53,7 @@ import profilePhoto from "../images/profilephoto.jpg";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRef } from "react";
 const APIGetUserData = APIURL() + "user-details";
 const APIGetTourDetails = APIURL() + "tour-details";
 const APIGetTourInfo = APIURL() + "get-Tourinfo";
@@ -137,8 +138,23 @@ const options2 = {
   },
 };
 export default function Themetemplate2(props) {
-  const AgnetID = props.match.params.id;
-  const ThemeId = props.match.params.themeid;
+  const AgnetID = props.AgentId;
+  const ThemeId = props.ThemeId;
+  const tourid = props.tourid;
+  const agentProfile = props.agentProfile;
+  const amenities = props.amenities;
+  const music = props.music;
+  const tourData = props.tourData;
+  const statename = props.statename;
+  const category = props.category;
+  const panoSetting = props.panoSetting;
+  const slideSetting = props.slideSetting;
+  const coAgentData = props.coAgentData;
+  const mls = props.mls;
+  const strict = props.strict;
+
+  // const AgnetID = props.match.params.id;
+  // const ThemeId = props.match.params.themeid;
   // const AgnetID = 7686;
   // const ThemeId = 4388002;
   const initialMorgageData = {
@@ -150,7 +166,7 @@ export default function Themetemplate2(props) {
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
-  const agentId = props.match.params.agentId;
+  // const agentId = props.match.params.agentId;
   const useStyles = makeStyles((theme) => ({
     backdrop: {
       zIndex: theme.zIndex.drawer + 500,
@@ -159,9 +175,9 @@ export default function Themetemplate2(props) {
   }));
   let history = useHistory();
   const classes = useStyles();
-  const [statename, setstatename] = useState(false);
+  // const [statename, setstatename] = useState(false);
   const [sync, setSync] = useState(true);
-  const [coAgentData, setCoAgentData] = useState([]);
+  // const [coAgentData, setCoAgentData] = useState([]);
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [message, setMessage] = useState("");
@@ -190,18 +206,31 @@ export default function Themetemplate2(props) {
   const [sendMail, setSendMail] = useState({});
   const [open, setOpen] = useState(false);
   const [captcha, setCaptcha] = useState(false);
-  const [agentProfile, setAgentProfile] = useState("");
+  // const [agentProfile, setAgentProfile] = useState("");
   const [floorPlanData, setFloorPlandata] = useState([]);
-  const [amenities, setAmenities] = useState({});
-  const [music, setMusic] = useState("");
-  const [tourData, setTourData] = useState({});
+  // const [amenities, setAmenities] = useState({});
+  // const [music, setMusic] = useState("");
+  // const [tourData, setTourData] = useState({});
   const [mortgageResult, setMortgageResult] = useState({});
   const [panoromaData, setPanromaData] = useState([]);
   const [openPanoromaModal, setOpenPanoromaModal] = useState(false);
   const [panoUrl, setPanoUrl] = useState("");
-  const [category, setCategory] = useState("");
-  const [panoSetting, setPanoSetting] = useState({});
-  const [slideSetting, setSlideSetting] = useState({});
+
+  const features = useRef(null);
+  const photos = useRef(null);
+  const location = useRef(null);
+  const presentedBy = useRef(null);
+  const contact = useRef(null);
+
+  const scrollToElement = (e, elementRef) => {
+    e.preventDefault();
+    if (elementRef.current) {
+      elementRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  // const [category, setCategory] = useState("");
+  // const [panoSetting, setPanoSetting] = useState({});
+  // const [slideSetting, setSlideSetting] = useState({});
   const options2 = {
     lazyLoad: true,
     loop: true,
@@ -282,31 +311,31 @@ export default function Themetemplate2(props) {
       }
     });
   }, [AgnetID]);
+  // useEffect(() => {
+  //   const objusr = {
+  //     authenticate_key: "abcd123XYZ",
+  //     agentId: AgnetID,
+  //     tourid: tourid,
+  //   };
+  //   postRecord(APIGetTourDetails, objusr).then((res) => {
+  //     if (res.data[0].response.status === "success") {
+  //       setAgentProfile(res.data[0].response.agentDetails);
+  //       setCoAgentData(res.data[0].response.coAgentData);
+  //       setAmenities(res.data[0].response.amenities);
+  //       setMusic(res.data[0].response.music);
+  //       setTourData(res.data[0].response.tourdetails);
+  //       setstatename(res.data[0].response.state);
+  //       setCategory(res.data[0].response.category);
+  //       setPanoSetting(res.data[0].response.panorama);
+  //       setSlideSetting(res.data[0].response.slideshow);
+  //     }
+  //   });
+  // }, [AgnetID, ThemeId]);
   useEffect(() => {
     const objusr = {
       authenticate_key: "abcd123XYZ",
       agentId: AgnetID,
-      tourid: ThemeId,
-    };
-    postRecord(APIGetTourDetails, objusr).then((res) => {
-      if (res.data[0].response.status === "success") {
-        setAgentProfile(res.data[0].response.agentDetails);
-        setCoAgentData(res.data[0].response.coAgentData);
-        setAmenities(res.data[0].response.amenities);
-        setMusic(res.data[0].response.music);
-        setTourData(res.data[0].response.tourdetails);
-        setstatename(res.data[0].response.state);
-        setCategory(res.data[0].response.category);
-        setPanoSetting(res.data[0].response.panorama);
-        setSlideSetting(res.data[0].response.slideshow);
-      }
-    });
-  }, [AgnetID, ThemeId]);
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgnetID,
-      tourid: ThemeId,
+      tourid: tourid,
     };
     postRecord(APIGetTourInfo, objusr).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -374,7 +403,7 @@ export default function Themetemplate2(props) {
   };
   const CalculateMortgage = () => {
     mortgageData.authenticate_key = "abcd123XYZ";
-    mortgageData.tourId = ThemeId;
+    mortgageData.tourId = tourid;
     console.log(mortgageData);
     postRecord(APIGetMortgageCalculator, mortgageData).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -388,10 +417,7 @@ export default function Themetemplate2(props) {
     CalculateMortgage();
   };
   const viewFlyer = () => {
-    window.open(
-      APIPath() + "agent-view-flyer-active/" + ThemeId + "/" + AgnetID,
-      "_blank"
-    );
+    window.open(HomePageUrl() + "site/flyer/" + tourid, "_blank");
   };
   const setVideoModal = (video) => {
     setOpenVideoModal(true);
@@ -421,7 +447,7 @@ export default function Themetemplate2(props) {
   const sendMailAgent = () => {
     setOpen(true);
     sendMail.authenticate_key = "abcd123XYZ";
-    sendMail.tourId = ThemeId;
+    sendMail.tourId = tourid;
     sendMail.agentId = AgnetID;
     postRecord(APIGetContactAgent, sendMail).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -450,7 +476,7 @@ export default function Themetemplate2(props) {
   };
   const scheduleAppointment = () => {
     amenityData.authenticate_key = "abcd123XYZ";
-    amenityData.tourId = ThemeId;
+    amenityData.tourId = tourid;
     setOpen(true);
     postRecord(APIGetScheduleAppointment, amenityData).then((res) => {
       console.log(res);
@@ -485,7 +511,10 @@ export default function Themetemplate2(props) {
               <div class="row">
                 <div class="col-lg-12">
                   <div class="header-boxfull">
-                    <div class="company-name">{tourDetailsData.Caption} {tourData.city} {statename}  {tourData.zipcode}</div>
+                    <div class="company-name">
+                      {tourDetailsData.Caption} {tourData.city} {statename}{" "}
+                      {tourData.zipcode}
+                    </div>
                     <div class="topmenu">
                       <nav id="cssmenu" class="head_btm_menu">
                         <ul>
@@ -493,16 +522,18 @@ export default function Themetemplate2(props) {
                             <a href="#home">Home</a>
                           </li>
                           <li>
-                            <a href="#features">Features</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,features)}>Features</a>
                           </li>
                           <li>
-                            <a href="#photos">Photos</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
                           </li>
+                          {!strict && (
+                            <li>
+                              <a href="#" onClick={(e)=>scrollToElement(e,location)}>Location</a>
+                            </li>
+                          )}
                           <li>
-                            <a href="#location">Location</a>
-                          </li>
-                          <li>
-                            <a href="#Presented">Presented By</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
                           </li>
                           <li>
                             <a href="#">Details</a>
@@ -532,80 +563,84 @@ export default function Themetemplate2(props) {
                               </li>
                             </ul>
                           </li>
-                          <li>
-                            <a href="#">Contact</a>
-                            <ul>
+                          {!mls && !strict && (
+                            <>
                               <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setopenAgentInfo(true)}
-                                >
-                                  Agent Info
-                                </a>
+                                <a href="#" onClick={(e)=>scrollToElement(e,contact)}>Contact</a>
+                                <ul>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setopenAgentInfo(true)}
+                                    >
+                                      Agent Info
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setopenAppointment(true)}
+                                    >
+                                      Schedule Appointment
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={ListingPage}
+                                    >
+                                      My Listings
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={facebookLink} target="_blank">
+                                      Facebook Link
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={TwitterLink} target="_blank">
+                                      Twitter Link
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={youTubeLink} target="_blank">
+                                      Youtube Link
+                                    </a>
+                                  </li>
+                                </ul>
                               </li>
                               <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setopenAppointment(true)}
-                                >
-                                  Schedule Appointment
-                                </a>
+                                <a href="#">Tools</a>
+                                <ul>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setOpenMortgage(true)}
+                                    >
+                                      {" "}
+                                      Mortgage Calculator
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setOpenWalkScore(true)}
+                                    >
+                                      Walk Score
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={AreaSchool}
+                                    >
+                                      Area School
+                                    </a>
+                                  </li>
+                                </ul>
                               </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={ListingPage}
-                                >
-                                  My Listings
-                                </a>
-                              </li>
-                              <li>
-                                <a href={facebookLink} target="_blank">
-                                  Facebook Link
-                                </a>
-                              </li>
-                              <li>
-                                <a href={TwitterLink} target="_blank">
-                                  Twitter Link
-                                </a>
-                              </li>
-                              <li>
-                                <a href={youTubeLink} target="_blank">
-                                  Youtube Link
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li>
-                            <a href="#">Tools</a>
-                            <ul>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setOpenMortgage(true)}
-                                >
-                                  {" "}
-                                  Mortgage Calculator
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setOpenWalkScore(true)}
-                                >
-                                  Walk Score
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={AreaSchool}
-                                >
-                                  Area School
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
+                            </>
+                          )}
                         </ul>
                       </nav>
                     </div>
@@ -642,8 +677,7 @@ export default function Themetemplate2(props) {
                 <div class="carousel-item active">
                   <img src={res.imageurl} />
                   <div class="container">
-                    <div class="carousel-caption">
-                    </div>
+                    <div class="carousel-caption"></div>
                   </div>
                 </div>
               ))}
@@ -655,7 +689,8 @@ export default function Themetemplate2(props) {
             <img src={banner_c} alt="" />
           </div>
         </div>
-        <div class="content" id="features">
+                    
+        <div class="content" id="features" ref={features} >
           <div class="content_inner">
             <div class="full_width">
               <div class="full_width_inner">
@@ -673,10 +708,10 @@ export default function Themetemplate2(props) {
                         <a href="#photos" class="viewflyerbtn white">
                           View All Photos
                         </a>
-                        <h3>
-                        {tourDetailsData.Caption}
-                        </h3>
-                        <small>{tourData.city}, {statename} {tourData.zipcode}</small>
+                        <h3>{tourDetailsData.Caption}</h3>
+                        <small>
+                          {tourData.city}, {statename} {tourData.zipcode}
+                        </small>
                         <p>{tourData.description}</p>
                       </div>
                     </div>
@@ -684,324 +719,357 @@ export default function Themetemplate2(props) {
                 </div>
                 <hr class="spacer1px" />
                 {/* <!--============= Property Details ================--> */}
-                <div class="property_details">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-md-8 m-auto">
-                        <div class="page_title">
-                          <h3>Property Details</h3>
-                        </div>
-                        <div class="property_details_left">
-                          <div class="row">
-                            <div class="col-sm-12 property_details_content">
-                              <ul>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Price</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Price === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {"$ " + tourDetailsData.Price}
-                                          </span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Bed</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 && tourDetailsData.Beds === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Beds}</span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
+                {!strict && (
+                  <div class="property_details">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-8 m-auto">
+                          <div class="page_title">
+                            <h3>Property Details</h3>
+                          </div>
+                          <div class="property_details_left">
+                            <div class="row">
+                              <div class="col-sm-12 property_details_content">
+                                <ul>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Price</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Price === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {"$ " + tourDetailsData.Price}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Bed</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Beds === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.Beds}</span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
 
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Baths:</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Baths === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Baths}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Square Feet :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.InteriorSqFt ===
-                                          null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.InteriorSqFt}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Garage :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Garage === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Garage}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Year Built :</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.YearBuilt === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.YearBuilt}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Lot Size :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.LotSize === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.LotSize}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>School District :</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.SchoolDistrict ===
-                                          null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.SchoolDistrict}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>MLS# :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 && tourDetailsData.MLS === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.MLS}</span>
-                                        )}
-                                      </td>
-                                      <td></td>
-                                      <td> </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                              </ul>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Baths:</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Baths === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.Baths}</span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Square Feet :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.InteriorSqFt ===
+                                            null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.InteriorSqFt}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Garage :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Garage === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.Garage}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Year Built :</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.YearBuilt === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.YearBuilt}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Lot Size :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.LotSize === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.LotSize}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>School District :</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.SchoolDistrict ===
+                                            null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.SchoolDistrict}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>MLS# :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.MLS === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.MLS}</span>
+                                          )}
+                                        </td>
+                                        <td></td>
+                                        <td> </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <hr class="spacer10px" />
-                        <div class="row">
-                          <div class="col-sm-12 text-center sharethis">
-                            <strong>Share This On</strong>
-                            <FacebookShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-facebook-f"></i>
-                            </FacebookShareButton>
-                            <LinkedinShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-linkedin-in"></i>
-                            </LinkedinShareButton>
-                            <WhatsappShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i
-                                style={{ backgroundColor: "rgb(37, 211, 102)" }}
-                                class="fab fa-whatsapp"
-                              ></i>
-                            </WhatsappShareButton>
-                            <TwitterShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-twitter"></i>
-                            </TwitterShareButton>
+                          <hr class="spacer10px" />
+                          <div class="row">
+                            <div class="col-sm-12 text-center sharethis">
+                              <strong>Share This On</strong>
+                              <FacebookShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-facebook-f"></i>
+                              </FacebookShareButton>
+                              <LinkedinShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-linkedin-in"></i>
+                              </LinkedinShareButton>
+                              <WhatsappShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i
+                                  style={{
+                                    backgroundColor: "rgb(37, 211, 102)",
+                                  }}
+                                  class="fab fa-whatsapp"
+                                ></i>
+                              </WhatsappShareButton>
+                              <TwitterShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-twitter"></i>
+                              </TwitterShareButton>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <hr class="spacer1px" />
                 {/* <!--============= Photo Gallery ================--> */}
-                {imageData.length >0 ?
-                <div
-                  class="photogallery"
-                  id="photos"
-                  style={{
-                    backgroundImage: "url(" + bg2 + ")",
-                    backgroundPosition: "fixed",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                  }}
-                >
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title2">
-                          <h3>Photo Gallery</h3>
+                {imageData.length > 0 ? (
+                  <div
+                    class="photogallery"
+                    id="photos"
+                    ref={photos}
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Photo Gallery</h3>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12">
-                        <OwlCarousel
-                          margin={10}
-                          {...options}
-                          class="gallery-design1 owl-carousel"
-                        >
-                          {imageData.map((res) => (
-                            <div
-                              class="gallerybox"
-                              onClick={() => ImageModal(res.imageurl)}
-                            >
-                              <div class="image-holder">
-                                <div class="gallery_bgimage">
-                                  <img src={res.imageurl} alt="image01" />
-                                </div>
-                                <div class="overlay">
-                                  <div class="button">
-                                    <p>{res.caption}</p>
-                                    <a onClick={() => ImageModal(res.imageurl)}>
-                                      <img
-                                        src={zoom2}
-                                        alt=""
-                                        style={{ width: "40px" }}
-                                      />
-                                    </a>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <OwlCarousel
+                            margin={10}
+                            {...options}
+                            class="gallery-design1 owl-carousel"
+                          >
+                            {imageData.map((res) => (
+                              <div
+                                class="gallerybox"
+                                onClick={() => ImageModal(res.imageurl)}
+                              >
+                                <div class="image-holder">
+                                  <div class="gallery_bgimage">
+                                    <img src={res.imageurl} alt="image01" />
+                                  </div>
+                                  <div class="overlay">
+                                    <div class="button">
+                                      <p>{res.caption}</p>
+                                      <a
+                                        onClick={() => ImageModal(res.imageurl)}
+                                      >
+                                        <img
+                                          src={zoom2}
+                                          alt=""
+                                          style={{ width: "40px" }}
+                                        />
+                                      </a>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
-                        </OwlCarousel>
+                            ))}
+                          </OwlCarousel>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                : "" }
+                ) : (
+                  ""
+                )}
                 <hr class="spacer1px" />
                 {/* <!--============= 3D Video ================--> */}
                 {/* <div class="video_3d">
@@ -1014,40 +1082,89 @@ export default function Themetemplate2(props) {
                                         </div>
                                     </div>
                                 </div> */}
-                {videoData.length > 0 ?
-                <div class="videogallery">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>Video Gallery</h3>
+                {videoData.length > 0 ? (
+                  <div class="videogallery">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title">
+                            <h3>Video Gallery</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          {videoData.map((res) => (
+                            <div class="col-md-6 m-auto">
+                              <div class="callbacks_container">
+                                <li>
+                                  <div class="gallerybox">
+                                    <div class="image-holder">
+                                      <img
+                                        src={videobg}
+                                        alt="Services"
+                                        class="image"
+                                      />
+                                      <span class="gallery_title">Video</span>
+                                      <div class="overlay">
+                                        <div class="button">
+                                          <p>Title Goes Here</p>
+                                          <a
+                                            onClick={() =>
+                                              setVideoModal(res.videurl)
+                                            }
+                                            data-title="Title Goes Here"
+                                          >
+                                            <img src={playicon} alt="" />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="col-lg-12">
-                        {videoData.map((res) => (
+                  </div>
+                ) : (
+                  ""
+                )}
+                <hr class="spacer1px" />
+                {/* <!--============= Floor Plans Gallery ================--> */}
+                {panoromaData.length > 0 ? (
+                  <div class="floorplans">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title">
+                            <h3>Panorama Gallery</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        {panoromaData.map((res) => (
                           <div class="col-md-6 m-auto">
                             <div class="callbacks_container">
-                              <li>
+                              <li
+                                data-src={res.panurl}
+                                data-sub-html="<p>trafficreport</p>"
+                              >
                                 <div class="gallerybox">
                                   <div class="image-holder">
-                                    <img
-                                      src={videobg}
-                                      alt="Services"
-                                      class="image"
-                                    />
-                                    <span class="gallery_title">Video</span>
+                                    <a href={res.panurl}>
+                                      <img alt="img1" src={res.panurl} />
+                                    </a>
                                     <div class="overlay">
-                                      <div class="button">
+                                      <div
+                                        class="button"
+                                        onClick={() => setPanoModal(res.panurl)}
+                                      >
                                         <p>Title Goes Here</p>
-                                        <a
-                                          onClick={() =>
-                                            setVideoModal(res.videurl)
-                                          }
-                                          data-title="Title Goes Here"
-                                        >
-                                          <img src={playicon} alt="" />
+                                        <a href="#">
+                                          <img src={zoom} alt="" />
                                         </a>
                                       </div>
                                     </div>
@@ -1060,365 +1177,339 @@ export default function Themetemplate2(props) {
                       </div>
                     </div>
                   </div>
-                </div>
-                : "" }
-                <hr class="spacer1px" />
-                {/* <!--============= Floor Plans Gallery ================--> */}
-                {panoromaData.length >0 ?
-                <div class="floorplans">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>Panorama Gallery</h3>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      {panoromaData.map((res) => (
-                        <div class="col-md-6 m-auto">
-                          <div class="callbacks_container">
-                            <li
-                              data-src={res.panurl}
-                              data-sub-html="<p>trafficreport</p>"
-                            >
-                              <div class="gallerybox">
-                                <div class="image-holder">
-                                  <a href={res.panurl}>
-                                    <img alt="img1" src={res.panurl} />
-                                  </a>
-                                  <div class="overlay">
-                                    <div
-                                      class="button"
-                                      onClick={() => setPanoModal(res.panurl)}
-                                    >
-                                      <p>Title Goes Here</p>
-                                      <a href="#">
-                                        <img src={zoom} alt="" />
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                : "" }
+                ) : (
+                  ""
+                )}
 
                 <hr class="spacer1px" />
 
                 {/* <!--============= Property Location ================--> */}
-                <div
-                  class="property_location"
-                  style={{
-                    backgroundImage: "url(" + allpages + ")",
-                    backgroundPosition: "fixed",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "100% 300px",
-                  }}
-                  id="location"
-                >
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title2">
-                          <h3>Property Location</h3>
+                {!strict && (
+                  <div
+                    class="property_location"
+                    style={{
+                      backgroundImage: "url(" + allpages + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "100% 300px",
+                    }}
+                    id="location"
+                    ref={location}
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Property Location</h3>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="googlemapframe">
-                          <div class="google-maps">
-                            <iframe
-                              src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                              width="100%"
-                              height="450"
-                              style={{ border: "0" }}
-                              allowfullscreen=""
-                              loading="lazy"
-                              referrerpolicy="no-referrer-when-downgrade"
-                            ></iframe>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="googlemapframe">
+                            <div class="google-maps">
+                              <iframe
+                                src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                                width="100%"
+                                height="450"
+                                style={{ border: "0" }}
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                              ></iframe>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <hr class="spacer1px" />
                 {/* <!--============= Presented By ================--> */}
-                <div class="presentedby_main" id="Presented">
-                  <div class="presentedby">
-                    <div class="presentedby_left">
-                      <div class="page_title2">
-                        <h3>Presented by</h3>
-                      </div>
 
-                      <div class="row">
-                        <div class="col-sm-4 agent_img">
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <img
-                              src={agentProfile.agent_profile.profile_img}
-                              alt=""
-                              title=""
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            <Skeleton variant="text" width={250} height={70} />
-                          )}
-                        </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h5>{agentProfile.agent_profile.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h6>{agentProfile.company_details.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class="spacer1px" />
-
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4 agent_img">
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <img
-                              src={coAgentData.profile_img}
-                              alt=""
-                              title=""
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            <Skeleton variant="text" width={250} height={70} />
-                          )}
-                        </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h5>{coAgentData.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h6>{coAgentData.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class="spacer1px" />
-
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                        </div>
-                      </div>
-
-                      <hr class="spacer20px" />
-
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <a
-                            href={"mailto:" + coAgentData.email}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-envelope"></i> Email Me
-                          </a>
-                          <a
-                            href="javascript:void()"
-                            style={{ marginLeft: "10px" }}
-                            onClick={handleWebsite}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-globe"></i> My Website
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="presentedby_right"
-                      style={{
-                        backgroundImage: "url(" + allpages + ")",
-                        backgroundPosition: "fixed",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                      }}
-                    >
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>
-
-                <hr class="spacer1px" />
-                <div class="sendme_details">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>
-                            Send Me Details And Market Information For This Home
-                          </h3>
+                {!strict && !mls && (
+                  <div class="presentedby_main" id="Presented" ref={presentedBy}>
+                    <div class="presentedby">
+                      <div class="presentedby_left">
+                        <div class="page_title2">
+                          <h3>Presented by</h3>
                         </div>
 
                         <div class="row">
-                          <div class="col-sm-8 presentedby_right_form">
-                            <form
-                              onSubmit={(event) => {
-                                event.preventDefault();
-                                sendMailAgent();
-                              }}
-                            >
-                              <ul>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="First Name *"
-                                    name="first_name"
-                                    value={sendMail.first_name}
-                                    class="presentedby_right_inputbox"
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="Last Name *"
-                                    class="presentedby_right_inputbox"
-                                    name="last_name"
-                                    value={sendMail.last_name}
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="email"
-                                    placeholder="Email *"
-                                    class="presentedby_right_inputbox"
-                                    name="contact_email"
-                                    value={sendMail.contact_email}
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="Phone"
-                                    class="presentedby_right_inputbox"
-                                    name="phone"
-                                    value={sendMail.phone}
-                                    onChange={handleInputMailChange}
-                                  />{" "}
-                                </li>
-                                <li class="last">
-                                  <textarea
-                                    cols=""
-                                    rows=""
-                                    placeholder="Comments"
-                                    class="presentedby_right_inputbox"
-                                    name="comments"
-                                    value={sendMail.comments}
-                                    onChange={handleInputMailChange}
-                                  ></textarea>
-                                </li>
-                                <li>
-                                  <input
-                                    name=""
-                                    type="submit"
-                                    value="Send"
-                                    class="sendbtn"
-                                  />
-                                </li>
-                              </ul>
-                            </form>
+                          <div class="col-sm-4 agent_img">
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <img
+                                src={agentProfile.agent_profile.profile_img}
+                                alt=""
+                                title=""
+                                style={{ width: "100%" }}
+                              />
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={250}
+                                height={70}
+                              />
+                            )}
                           </div>
-                          <div class="col-sm-4 presentedby_right_img">
-                            <img src={vtcLogo} alt="" />
+                          <div class="col-sm-8 agent_sectionbody">
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <h5>{agentProfile.agent_profile.name}</h5>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class=" spacer20px" />
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <h6>{agentProfile.company_details.company}</h6>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class="spacer1px" />
+
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.mobile}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.email}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class=" spacer20px" />
+                          </div>
+                        </div>
+                        {Object.keys(coAgentData).length > 0 && (
+                          <div class="row">
+                            <div class="col-sm-4 agent_img">
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <img
+                                  src={coAgentData.profile_img}
+                                  alt=""
+                                  title=""
+                                  style={{ width: "100%" }}
+                                />
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={250}
+                                  height={70}
+                                />
+                              )}
+                            </div>
+                            <div class="col-sm-8 agent_sectionbody">
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h5>{coAgentData.name}</h5>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h6>{coAgentData.company}</h6>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class="spacer1px" />
+
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.mobile}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.email}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                            </div>
+                          </div>
+                        )}
+
+                        <hr class="spacer20px" />
+
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <a
+                              href={"mailto:" + coAgentData.email}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-envelope"></i> Email Me
+                            </a>
+                            <a
+                              href="javascript:void()"
+                              style={{ marginLeft: "10px" }}
+                              onClick={handleWebsite}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-globe"></i> My Website
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        class="presentedby_right"
+                        style={{
+                          backgroundImage: "url(" + allpages + ")",
+                          backgroundPosition: "fixed",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                        }}
+                      >
+                        &nbsp;
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <hr class="spacer1px" />
+                {!strict && !mls && (
+                  <div class="sendme_details" ref={contact}>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title">
+                            <h3>
+                              Send Me Details And Market Information For This
+                              Home
+                            </h3>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-sm-8 presentedby_right_form">
+                              <form
+                                onSubmit={(event) => {
+                                  event.preventDefault();
+                                  sendMailAgent();
+                                }}
+                              >
+                                <ul>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="First Name *"
+                                      name="first_name"
+                                      value={sendMail.first_name}
+                                      class="presentedby_right_inputbox"
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="Last Name *"
+                                      class="presentedby_right_inputbox"
+                                      name="last_name"
+                                      value={sendMail.last_name}
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="email"
+                                      placeholder="Email *"
+                                      class="presentedby_right_inputbox"
+                                      name="contact_email"
+                                      value={sendMail.contact_email}
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="Phone"
+                                      class="presentedby_right_inputbox"
+                                      name="phone"
+                                      value={sendMail.phone}
+                                      onChange={handleInputMailChange}
+                                    />{" "}
+                                  </li>
+                                  <li class="last">
+                                    <textarea
+                                      cols=""
+                                      rows=""
+                                      placeholder="Comments"
+                                      class="presentedby_right_inputbox"
+                                      name="comments"
+                                      value={sendMail.comments}
+                                      onChange={handleInputMailChange}
+                                    ></textarea>
+                                  </li>
+                                  <li>
+                                    <input
+                                      name=""
+                                      type="submit"
+                                      value="Send"
+                                      class="sendbtn"
+                                    />
+                                  </li>
+                                </ul>
+                              </form>
+                            </div>
+                            <div class="col-sm-4 presentedby_right_img">
+                              <img src={vtcLogo} alt="" />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <div
                   class="bodycontent_footerbtm3"
                   style={{

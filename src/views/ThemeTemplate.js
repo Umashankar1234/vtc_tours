@@ -57,6 +57,7 @@ const APIGetMortgageCalculator = APIURL() + "get-Mortgage-Calculator";
 const APIGetContactAgent = APIURL() + "get-Contact-Agent";
 const APIGetScheduleAppointment = APIURL() + "get-scheduleMail";
 const APIGetFloorList = APIURL() + "edit-floor-Plans";
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -118,9 +119,28 @@ const useStyles = makeStyles((theme) => ({
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
 export default function Themetemplate(props) {
+  const features = useRef(null);
+  const photos = useRef(null);
+  const location = useRef(null);
+  const presentedBy = useRef(null);
+  const contact = useRef(null);
+  const AgnetID = props.AgentId;
+  const ThemeId = props.ThemeId;
+  const tourid = props.tourid;
+  const agentProfile = props.agentProfile;
+  const amenities = props.amenities;
+  const music = props.music;
+  const tourData = props.tourData;
+  const statename = props.statename;
+  const category = props.category;
+  const panoSetting = props.panoSetting;
+  const slideSetting = props.slideSetting;
+  const mls = props.mls;
+  const strict = props.strict;
+
   // ===============important=============/
-  const AgnetID = props.match.params.id;
-  const ThemeId = props.match.params.themeid;
+  // const AgnetID = props.match.params.id;
+  // const ThemeId = props.match.params.themeid;
   // ===============important=============/
   // const AgnetID = 7686;
   // const ThemeId = 4388002;
@@ -142,11 +162,12 @@ export default function Themetemplate(props) {
   const classes = useStyles();
   const { dispatch } = useContext(AuthContext);
   const context = useContext(AuthContext);
+
   let history = useHistory();
   const [sync, setSync] = useState(true);
   const [coAgentData, setCoAgentData] = useState([]);
   const [openError, setOpenError] = useState(false);
-  const [statename, setstatename] = useState(false);
+  // const [statename, setstatename] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [currentUser, setCurrentUser] = useState({});
@@ -179,13 +200,20 @@ export default function Themetemplate(props) {
   const [sendMail, setSendMail] = useState({});
   const [open, setOpen] = useState(false);
   const [floorPlanData, setFloorPlansData] = useState({});
-  const [agentProfile, setAgentProfile] = useState("");
-  const [amenities, setAmenities] = useState({});
-  const [music, setMusic] = useState("");
-  const [tourData, setTourData] = useState({});
-  const [category, setCategory] = useState("");
-  const [panoSetting, setPanoSetting] = useState({});
-  const [slideSetting, setSlideSetting] = useState({});
+
+  const scrollToElement = (e,elementRef) => {
+    e.preventDefault();
+    if (elementRef.current) {
+      elementRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  // const [agentProfile, setAgentProfile] = useState("");
+  // const [amenities, setAmenities] = useState({});
+  // const [music, setMusic] = useState("");
+  // const [tourData, setTourData] = useState({});
+  // const [category, setCategory] = useState("");
+  // const [panoSetting, setPanoSetting] = useState({});
+  // const [slideSetting, setSlideSetting] = useState({});
   useEffect(() => {
     const objusr = {
       authenticate_key: "abcd123XYZ",
@@ -208,27 +236,27 @@ export default function Themetemplate(props) {
       }
     });
   }, []);
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgnetID,
-      tourid: ThemeId,
-    };
-    postRecord(APIGetTourDetails, objusr).then((res) => {
-      console.log(res.data[0].response);
-      if (res.data[0].response.status === "success") {
-        setAgentProfile(res.data[0].response.agentDetails);
-        setCoAgentData(res.data[0].response.coAgentData);
-        setAmenities(res.data[0].response.amenities);
-        setMusic(res.data[0].response.music);
-        setTourData(res.data[0].response.tourdetails);
-        setstatename(res.data[0].response.state);
-        setCategory(res.data[0].response.category);
-        setPanoSetting(res.data[0].response.panorama);
-        setSlideSetting(res.data[0].response.slideshow);
-      }
-    });
-  }, [AgnetID, ThemeId]);
+  // useEffect(() => {
+  //   const objusr = {
+  //     authenticate_key: "abcd123XYZ",
+  //     agentId: AgnetID,
+  //     tourid: tourid,
+  //   };
+  //   postRecord(APIGetTourDetails, objusr).then((res) => {
+  //     console.log(res.data[0].response);
+  //     if (res.data[0].response.status === "success") {
+  //       setAgentProfile(res.data[0].response.agentDetails);
+  //       setCoAgentData(res.data[0].response.coAgentData);
+  //       setAmenities(res.data[0].response.amenities);
+  //       setMusic(res.data[0].response.music);
+  //       setTourData(res.data[0].response.tourdetails);
+  //       setstatename(res.data[0].response.state);
+  //       setCategory(res.data[0].response.category);
+  //       setPanoSetting(res.data[0].response.panorama);
+  //       setSlideSetting(res.data[0].response.slideshow);
+  //     }
+  //   });
+  // }, [AgnetID, ThemeId]);
   useEffect(() => {
     const obj = { authenticate_key: "abcd123XYZ" };
     postRecord(APIGetSocialIconLink, obj).then((res) => {
@@ -245,7 +273,7 @@ export default function Themetemplate(props) {
     const objusr = {
       authenticate_key: "abcd123XYZ",
       agentId: AgnetID,
-      tourid: ThemeId,
+      tourid: tourid,
     };
     postRecord(APIGetTourInfo, objusr).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -310,7 +338,7 @@ export default function Themetemplate(props) {
   };
   const CalculateMortgage = () => {
     mortgageData.authenticate_key = "abcd123XYZ";
-    mortgageData.tourId = ThemeId;
+    mortgageData.tourId = tourid;
     postRecord(APIGetMortgageCalculator, mortgageData).then((res) => {
       if (res.data[0].response.status === "success") {
         setMortgageResult(res.data[0].response.data);
@@ -465,7 +493,7 @@ export default function Themetemplate(props) {
   const sendMailAgent = () => {
     setOpen(true);
     sendMail.authenticate_key = "abcd123XYZ";
-    sendMail.tourId = ThemeId;
+    sendMail.tourId = tourid;
     sendMail.agentId = AgnetID;
     postRecord(APIGetContactAgent, sendMail)
       .then((res) => {
@@ -501,7 +529,7 @@ export default function Themetemplate(props) {
   };
   const scheduleAppointment = () => {
     amenityData.authenticate_key = "abcd123XYZ";
-    amenityData.tourId = ThemeId;
+    amenityData.tourId = tourid;
     setOpen(true);
     postRecord(APIGetScheduleAppointment, amenityData).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -539,121 +567,132 @@ export default function Themetemplate(props) {
                             <a href="#home">Home</a>
                           </li>
                           <li>
-                            <a href="#feature">Features</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,features)}>Features</a>
                           </li>
                           <li>
-                            <a href="#photos">Photos</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
                           </li>
-                          <li>
-                            <a href="#location">Location</a>
-                          </li>
-                          <li>
-                            <a href="#presented">Presented By</a>
-                          </li>
-                          <li>
-                            <a href="#">Details</a>
-                            <ul>
+                          {!strict && (
+                            <li>
+                              <a href="#" onClick={(e)=>scrollToElement(e,location)}>Location</a>
+                            </li>
+                          )}
+                          {!strict && !mls && (
+                            <li>
+                              <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
+                            </li>
+                          )}
+                          {!mls && !strict && (
+                            <>
                               <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() =>
-                                    setOpenProertyInfromation(true)
-                                  }
-                                >
-                                  Property Information
-                                </a>
+                                <a href="#">Details</a>
+                                <ul>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() =>
+                                        setOpenProertyInfromation(true)
+                                      }
+                                    >
+                                      Property Information
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setOpenAmenties(true)}
+                                    >
+                                      Amenities
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={viewFlyer}
+                                    >
+                                      Printable Flyer
+                                    </a>
+                                  </li>
+                                </ul>
                               </li>
                               <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setOpenAmenties(true)}
-                                >
-                                  Amenities
-                                </a>
+                                <a href="#" onClick={(e)=>scrollToElement(e,contact)}>Contact</a>
+                                <ul>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setopenAgentInfo(true)}
+                                    >
+                                      Agent Info
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setopenAppointment(true)}
+                                    >
+                                      Schedule Appointment
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={ListingPage}
+                                    >
+                                      My Listings
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={facebookLink} target="_blank">
+                                      Facebook Link
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={TwitterLink} target="_blank">
+                                      Twitter Link
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a href={youTubeLink} target="_blank">
+                                      Youtube Link
+                                    </a>
+                                  </li>
+                                </ul>
                               </li>
                               <li>
-                                <a href="javascript:void()" onClick={viewFlyer}>
-                                  Printable Flyer
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li>
-                            <a href="#">Contact</a>
-                            <ul>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setopenAgentInfo(true)}
-                                >
-                                  Agent Info
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setopenAppointment(true)}
-                                >
-                                  Schedule Appointment
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={ListingPage}
-                                >
-                                  My Listings
-                                </a>
-                              </li>
-                              <li>
-                                <a href={facebookLink} target="_blank">
-                                  Facebook Link
-                                </a>
-                              </li>
-                              <li>
-                                <a href={TwitterLink} target="_blank">
-                                  Twitter Link
-                                </a>
-                              </li>
-                              <li>
-                                <a href={youTubeLink} target="_blank">
-                                  Youtube Link
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-                          <li>
-                            <a href="#">Tools</a>
-                            <ul>
-                              {/* <li><a href="#map">Map View</a></li>
+                                <a href="#">Tools</a>
+                                <ul>
+                                  {/* <li><a href="#map">Map View</a></li>
                                                             <li><a href="javascript:void()" >Arial View</a></li> */}
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setOpenMortgage(true)}
-                                >
-                                  {" "}
-                                  Mortgage Calculator
-                                </a>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setOpenMortgage(true)}
+                                    >
+                                      {" "}
+                                      Mortgage Calculator
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={() => setOpenWalkScore(true)}
+                                    >
+                                      Walk Score
+                                    </a>
+                                  </li>
+                                  <li>
+                                    <a
+                                      href="javascript:void()"
+                                      onClick={AreaSchool}
+                                    >
+                                      Area School
+                                    </a>
+                                  </li>
+                                </ul>
                               </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={() => setOpenWalkScore(true)}
-                                >
-                                  Walk Score
-                                </a>
-                              </li>
-                              <li>
-                                <a
-                                  href="javascript:void()"
-                                  onClick={AreaSchool}
-                                >
-                                  Area School
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
+                            </>
+                          )}
                         </ul>
                       </nav>
                     </div>
@@ -730,93 +769,114 @@ export default function Themetemplate(props) {
                       <div
                         class="row second_section third_section"
                         id="feature"
+                        ref={features}
                       >
-                        <div class="col-md-6 m-auto">
-                          <h4>Property Details</h4>
-                          <ul>
-                            <li>
-                              <strong>Price: </strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.Price === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{"$ " + tourDetailsData.Price}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Bed:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.Beds === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.Beds}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Baths:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.Baths === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.Baths}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Square Feet:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.InteriorSqFt === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.InteriorSqFt}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Garage:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.Garage === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.Garage}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Year Built:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.YearBuilt === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.YearBuilt}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>Lot Size:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.LotSize === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.LotSize}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>School District:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.SchoolDistrict === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.SchoolDistrict}</span>
-                              )}
-                            </li>
-                            <li>
-                              <strong>MLS#:</strong>
-                              {Object.keys(tourDetailsData).length > 0 &&
-                              tourDetailsData.MLS === null ? (
-                                <span style={{ marginLeft: "10px" }}>N/A</span>
-                              ) : (
-                                <span>{tourDetailsData.MLS}</span>
-                              )}
-                            </li>
-                          </ul>
-                        </div>
+                        {!strict && (
+                          <div class="col-md-6 m-auto">
+                            <h4>Property Details</h4>
+                            <ul>
+                              <li>
+                                <strong>Price: </strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.Price === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{"$ " + tourDetailsData.Price}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Bed:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.Beds === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.Beds}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Baths:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.Baths === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.Baths}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Square Feet:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.InteriorSqFt === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.InteriorSqFt}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Garage:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.Garage === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.Garage}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Year Built:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.YearBuilt === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.YearBuilt}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>Lot Size:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.LotSize === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.LotSize}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>School District:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.SchoolDistrict === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.SchoolDistrict}</span>
+                                )}
+                              </li>
+                              <li>
+                                <strong>MLS#:</strong>
+                                {Object.keys(tourDetailsData).length > 0 &&
+                                tourDetailsData.MLS === null ? (
+                                  <span style={{ marginLeft: "10px" }}>
+                                    N/A
+                                  </span>
+                                ) : (
+                                  <span>{tourDetailsData.MLS}</span>
+                                )}
+                              </li>
+                            </ul>
+                          </div>
+                        )}
                         <hr class="spacer30px" />
                         <hr class="spacer30px" />
 
@@ -872,7 +932,7 @@ export default function Themetemplate(props) {
                   </div>
                   <hr class="spacer1px" />
                   {imageData.length > 0 ? (
-                    <div class="bodycontent_gallery" id="photos">
+                    <div class="bodycontent_gallery" id="photos" ref={photos}>
                       <h4>Photo Gallery</h4>
                       <ul>
                         {Object.keys(imageData).length > 0
@@ -897,7 +957,7 @@ export default function Themetemplate(props) {
                                           class="example-image-link"
                                           href={res.imageurl}
                                           data-lightbox="example-1"
-                                          data-title="Title Goes Here"
+                                          data-title={res.caption}
                                         >
                                           <img src={zoomIcon} alt="" />
                                         </a>
@@ -951,7 +1011,7 @@ export default function Themetemplate(props) {
                                     <p>Title Goes Here</p>
                                     <a
                                       onClick={() => setVideoModal(res.videurl)}
-                                      data-title="Title Goes Here"
+                                      data-title={res.caption}
                                     >
                                       <img src={playicon} alt="" />
                                     </a>
@@ -1019,340 +1079,360 @@ export default function Themetemplate(props) {
                   ) : (
                     ""
                   )}
-                  <div class="bodycontent_location" id="location">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <h4>Property Location</h4>
+                  {!strict && (
+                    <div
+                      class="bodycontent_location"
+                      id="location"
+                      ref={location}
+                    >
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <h4>Property Location</h4>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="googlemapframe">
+                        <div class="google-maps">
+                          <iframe
+                            src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                            width="100%"
+                            height="450"
+                            style={{ border: "0" }}
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                          ></iframe>
                         </div>
                       </div>
                     </div>
-
-                    <div class="googlemapframe">
-                      <div class="google-maps">
-                        <iframe
-                          src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                          width="100%"
-                          height="450"
-                          style={{ border: "0" }}
-                          allowfullscreen=""
-                          loading="lazy"
-                          referrerpolicy="no-referrer-when-downgrade"
-                        ></iframe>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                   <hr class="spacer1px" />
-                  <div class="bodycontent_agent" id="presented">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <h4>Agent/Branding</h4>
+                  {!mls && !strict && (
+                    <div
+                      class="bodycontent_agent"
+                      id="presented"
+                      ref={presentedBy}
+                    >
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <h4>Agent/Branding</h4>
+                          </div>
                         </div>
-                      </div>
-                      <hr class="spacer20px" />
+                        <hr class="spacer20px" />
 
-                      <div class="row">
-                        <div class="col-sm-4">
-                          <div class="profile-photo">
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <div class="profile-photo">
+                              {Object.keys(agentProfile).length > 0 ? (
+                                <img
+                                  src={agentProfile.agent_profile.profile_img}
+                                  alt=""
+                                  title=""
+                                  style={{ width: "100%" }}
+                                />
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={250}
+                                  height={70}
+                                />
+                              )}
+                            </div>
+                          </div>
+                          <div class="col-sm-8 agent_sectionbody">
                             {Object.keys(agentProfile).length > 0 ? (
-                              <img
-                                src={agentProfile.agent_profile.profile_img}
-                                alt=""
-                                title=""
-                                style={{ width: "100%" }}
-                              />
+                              <h5>{agentProfile.agent_profile.name}</h5>
                             ) : (
                               <Skeleton
                                 variant="text"
-                                width={250}
-                                height={70}
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
                               />
                             )}
-                          </div>
-                        </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h5>{agentProfile.agent_profile.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h6>{agentProfile.company_details.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          <a
-                            href={"mailto:" + agentProfile.email}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-envelope"></i> Email Me
-                          </a>
-                          <a
-                            href="javascript:void()"
-                            style={{ marginLeft: "10px" }}
-                            onClick={handleWebsite}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-globe"></i> My Website
-                          </a>
-                          <hr class=" spacer20px" />
-                          <p>
-                            Lorem Ipsum is simply dummy text of the printing and
-                            typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s,
-                            when an unknown printer took a galley of type and
-                            scrambled it to make a type specimen book. It has
-                            survived not only five centuries, but also the leap
-                            into electronic typesetting, remaining essentially
-                            unchanged.{" "}
-                          </p>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4">
-                          <div class="profile-photo">
-                            {Object.keys(coAgentData).length > 0 ? (
-                              <img
-                                src={coAgentData.profile_img}
-                                alt=""
-                                title=""
-                                style={{ width: "100%" }}
-                              />
+                            <hr class=" spacer20px" />
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <h6>{agentProfile.company_details.company}</h6>
                             ) : (
                               <Skeleton
                                 variant="text"
-                                width={250}
-                                height={70}
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
                               />
                             )}
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.mobile}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.email}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class=" spacer20px" />
+                            <a
+                              href={"mailto:" + agentProfile.email}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-envelope"></i> Email Me
+                            </a>
+                            <a
+                              href="javascript:void()"
+                              style={{ marginLeft: "10px" }}
+                              onClick={handleWebsite}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-globe"></i> My Website
+                            </a>
+                            <hr class=" spacer20px" />
+                            <p>
+                              Lorem Ipsum is simply dummy text of the printing
+                              and typesetting industry. Lorem Ipsum has been the
+                              industry's standard dummy text ever since the
+                              1500s, when an unknown printer took a galley of
+                              type and scrambled it to make a type specimen
+                              book. It has survived not only five centuries, but
+                              also the leap into electronic typesetting,
+                              remaining essentially unchanged.{" "}
+                            </p>
                           </div>
                         </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h5>{coAgentData.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h6>{coAgentData.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          <a
-                            href={"mailto:" + coAgentData.email}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-envelope"></i> Email Me
-                          </a>
-                          <a
-                            href="javascript:void()"
-                            style={{ marginLeft: "10px" }}
-                            onClick={handleWebsite}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-globe"></i> My Website
-                          </a>
-                          <hr class=" spacer20px" />                         
-                        </div>
+                        {Object.keys(coAgentData).length > 0 && (
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <div class="profile-photo">
+                                {Object.keys(coAgentData).length > 0 ? (
+                                  <img
+                                    src={coAgentData.profile_img}
+                                    alt=""
+                                    title=""
+                                    style={{ width: "100%" }}
+                                  />
+                                ) : (
+                                  <Skeleton
+                                    variant="text"
+                                    width={250}
+                                    height={70}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                            <div class="col-sm-8 agent_sectionbody">
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h5>{coAgentData.name}</h5>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h6>{coAgentData.company}</h6>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.mobile}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.email}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                              <a
+                                href={"mailto:" + coAgentData.email}
+                                class="agentbtn"
+                              >
+                                <i class="far fa-envelope"></i> Email Me
+                              </a>
+                              <a
+                                href="javascript:void()"
+                                style={{ marginLeft: "10px" }}
+                                onClick={handleWebsite}
+                                class="agentbtn"
+                              >
+                                <i class="far fa-globe"></i> My Website
+                              </a>
+                              <hr class=" spacer20px" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  )}
                   <hr class="spacer1px" />
-                  <div
-                    class="bodycontent_contact"
-                    id="contact"
-                    style={{
-                      backgroundImage: "url(" + mission_bg + ")",
-                      backgroundPosition: "fixed",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                    }}
-                  >
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <h4>Contact</h4>
+                  {!mls && !strict && (
+                    <div
+                      class="bodycontent_contact"
+                      id="contact"
+                      ref={contact}
+                      style={{
+                        backgroundImage: "url(" + mission_bg + ")",
+                        backgroundPosition: "fixed",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                      }}
+                    >
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <h4>Contact</h4>
+                          </div>
                         </div>
-                      </div>
-                      <hr class="spacer20px" />
+                        <hr class="spacer20px" />
 
-                      <div class="row">
-                        <div class="col-lg-12 m-auto">
-                          <div class="bgwhite-btmpanel">
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="contact_left">
-                                  <img src={vtclogo} alt="" />
-                                  <h5>VirtualTourCafe, LLC</h5>
-                                  <p>
-                                    {Object.keys(data).length > 0 ? (
-                                      <a href="tel:">
-                                        <i class="fas fa-phone-alt"></i>
-                                        {data.phone_number}
-                                      </a>
-                                    ) : (
-                                      <Skeleton
-                                        variant="text"
-                                        width={150}
-                                        height={50}
-                                        style={{ background: "#bbbbbb" }}
-                                      />
-                                    )}
-                                    <br />
-                                    {Object.keys(data).length > 0 ? (
-                                      <a href="mailto:">
-                                        <i class="fa fa-envelope"></i>
-                                        {data.site_email}
-                                      </a>
-                                    ) : (
-                                      <Skeleton
-                                        variant="text"
-                                        width={150}
-                                        height={50}
-                                        style={{ background: "#bbbbbb" }}
-                                      />
-                                    )}
-                                  </p>
+                        <div class="row">
+                          <div class="col-lg-12 m-auto">
+                            <div class="bgwhite-btmpanel">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="contact_left">
+                                    <img src={vtclogo} alt="" />
+                                    <h5>VirtualTourCafe, LLC</h5>
+                                    <p>
+                                      {Object.keys(data).length > 0 ? (
+                                        <a href="tel:">
+                                          <i class="fas fa-phone-alt"></i>
+                                          {data.phone_number}
+                                        </a>
+                                      ) : (
+                                        <Skeleton
+                                          variant="text"
+                                          width={150}
+                                          height={50}
+                                          style={{ background: "#bbbbbb" }}
+                                        />
+                                      )}
+                                      <br />
+                                      {Object.keys(data).length > 0 ? (
+                                        <a href="mailto:">
+                                          <i class="fa fa-envelope"></i>
+                                          {data.site_email}
+                                        </a>
+                                      ) : (
+                                        <Skeleton
+                                          variant="text"
+                                          width={150}
+                                          height={50}
+                                          style={{ background: "#bbbbbb" }}
+                                        />
+                                      )}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <div class="col-md-8">
-                                <div class="contact_right">
-                                  <form
-                                    onSubmit={(event) => {
-                                      event.preventDefault();
-                                      sendMailAgent();
-                                    }}
-                                  >
-                                    <ul>
-                                      <li>
-                                        <input
-                                          type="text"
-                                          placeholder="First Name *"
-                                          class="inputbox"
-                                          name="first_name"
-                                          value={sendMail.first_name}
-                                          onChange={handleInputMailChange}
-                                        />
-                                      </li>
-                                      <li>
-                                        <input
-                                          name="last_name"
-                                          type="text"
-                                          placeholder="Last Name *"
-                                          class="inputbox"
-                                          value={sendMail.last_name}
-                                          onChange={handleInputMailChange}
-                                        />
-                                      </li>
-                                      <li>
-                                        <input
-                                          name="contact_email"
-                                          type="email"
-                                          placeholder="Your Email *"
-                                          class="inputbox"
-                                          value={sendMail.contact_email}
-                                          onChange={handleInputMailChange}
-                                        />
-                                      </li>
-                                      <li>
-                                        <textarea
-                                          name="comments"
-                                          cols=""
-                                          rows=""
-                                          value={sendMail.comments}
-                                          placeholder="Message"
-                                          class="inputbox"
-                                          onChange={handleInputMailChange}
-                                        ></textarea>
-                                      </li>
-                                      <li>
-                                        <button type="submit" class="agentbtn">
-                                          Submit
-                                          <i
-                                            class="fas fa-paper-plane"
-                                            style={{ marginLeft: "10px" }}
-                                          ></i>
-                                        </button>
-                                      </li>
-                                    </ul>
-                                  </form>
+                                <div class="col-md-8">
+                                  <div class="contact_right">
+                                    <form
+                                      onSubmit={(event) => {
+                                        event.preventDefault();
+                                        sendMailAgent();
+                                      }}
+                                    >
+                                      <ul>
+                                        <li>
+                                          <input
+                                            type="text"
+                                            placeholder="First Name *"
+                                            class="inputbox"
+                                            name="first_name"
+                                            value={sendMail.first_name}
+                                            onChange={handleInputMailChange}
+                                          />
+                                        </li>
+                                        <li>
+                                          <input
+                                            name="last_name"
+                                            type="text"
+                                            placeholder="Last Name *"
+                                            class="inputbox"
+                                            value={sendMail.last_name}
+                                            onChange={handleInputMailChange}
+                                          />
+                                        </li>
+                                        <li>
+                                          <input
+                                            name="contact_email"
+                                            type="email"
+                                            placeholder="Your Email *"
+                                            class="inputbox"
+                                            value={sendMail.contact_email}
+                                            onChange={handleInputMailChange}
+                                          />
+                                        </li>
+                                        <li>
+                                          <textarea
+                                            name="comments"
+                                            cols=""
+                                            rows=""
+                                            value={sendMail.comments}
+                                            placeholder="Message"
+                                            class="inputbox"
+                                            onChange={handleInputMailChange}
+                                          ></textarea>
+                                        </li>
+                                        <li>
+                                          <button
+                                            type="submit"
+                                            class="agentbtn"
+                                          >
+                                            Submit
+                                            <i
+                                              class="fas fa-paper-plane"
+                                              style={{ marginLeft: "10px" }}
+                                            ></i>
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </form>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1360,7 +1440,7 @@ export default function Themetemplate(props) {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   <div class="bodycontent_footerbtm">
                     <div class="container">
                       <div class="row">

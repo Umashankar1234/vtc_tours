@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { APIURL, APIPath } from "../CommonMethods/Fetch";
 import { postRecord } from "../CommonMethods/Save";
 import {
@@ -59,7 +59,21 @@ function Alert(props) {
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function ThemeTemplate4(props) {
+export default function ThemeTemplate3(props) {
+  const AgnetID = props.AgentId;
+  const ThemeId = props.ThemeId;
+  const tourid = props.tourid;
+  const mls = props.mls;
+  const strict = props.strict;
+  const agentProfile = props.agentProfile;
+  const amenities = props.amenities;
+  const music = props.music;
+  const tourData = props.tourData;
+  const statename = props.statename;
+  const category = props.category;
+  const panoSetting = props.panoSetting;
+  const slideSetting = props.slideSetting;
+
   const initialMorgageData = {
     length: "",
     rate: "",
@@ -72,12 +86,12 @@ export default function ThemeTemplate4(props) {
       color: "#fff",
     },
   }));
-  const AgnetID = props.match.params.id;
-  const ThemeId = props.match.params.themeid;
+  // const AgnetID = props.match.params.id;
+  // const ThemeId = props.match.params.themeid;
   const { dispatch } = useContext(AuthContext);
   const context = useContext(AuthContext);
   const classes = useStyles();
-  const [statename, setstatename] = useState(false);
+  // const [statename, setstatename] = useState(false);
   let history = useHistory();
   const [sync, setSync] = useState(true);
   const [openError, setOpenError] = useState(false);
@@ -111,14 +125,14 @@ export default function ThemeTemplate4(props) {
   const [sendMail, setSendMail] = useState({});
   const [open, setOpen] = useState(false);
   const [floorPlanData, setFloorPlandata] = useState([]);
-  const [agentProfile, setAgentProfile] = useState("");
-  const [music, setMusic] = useState("");
-  const [tourData, setTourData] = useState({});
+  // const [agentProfile, setAgentProfile] = useState("");
+  // const [music, setMusic] = useState("");
+  // const [tourData, setTourData] = useState({});
   const [mortgageResult, setMortgageResult] = useState({});
-  const [amenities, setAmenities] = useState({});
-  const [category, setCategory] = useState("");
-  const [panoSetting, setPanoSetting] = useState({});
-  const [slideSetting, setSlideSetting] = useState({});
+  // const [amenities, setAmenities] = useState({});
+  // const [category, setCategory] = useState("");
+  // const [panoSetting, setPanoSetting] = useState({});
+  // const [slideSetting, setSlideSetting] = useState({});
   const [coAgentData, setCoAgentData] = useState([]);
 
   useEffect(() => {
@@ -133,32 +147,32 @@ export default function ThemeTemplate4(props) {
       }
     });
   }, [AgnetID]);
+  // useEffect(() => {
+  //   const objusr = {
+  //     authenticate_key: "abcd123XYZ",
+  //     agentId: AgnetID,
+  //     tourid: ThemeId,
+  //   };
+  //   postRecord(APIGetTourDetails, objusr).then((res) => {
+  //     console.log(res.data[0].response);
+  //     if (res.data[0].response.status === "success") {
+  //       setAgentProfile(res.data[0].response.agentDetails);
+  //       setCoAgentData(res.data[0].response.coAgentData);
+  //       setAmenities(res.data[0].response.amenities);
+  //       setMusic(res.data[0].response.music);
+  //       setstatename(res.data[0].response.state);
+  //       setTourData(res.data[0].response.tourdetails);
+  //       setCategory(res.data[0].response.category);
+  //       setPanoSetting(res.data[0].response.panorama);
+  //       setSlideSetting(res.data[0].response.slideshow);
+  //     }
+  //   });
+  // }, [AgnetID, ThemeId]);
   useEffect(() => {
     const objusr = {
       authenticate_key: "abcd123XYZ",
       agentId: AgnetID,
-      tourid: ThemeId,
-    };
-    postRecord(APIGetTourDetails, objusr).then((res) => {
-      console.log(res.data[0].response);
-      if (res.data[0].response.status === "success") {
-        setAgentProfile(res.data[0].response.agentDetails);
-        setCoAgentData(res.data[0].response.coAgentData);
-        setAmenities(res.data[0].response.amenities);
-        setMusic(res.data[0].response.music);
-        setstatename(res.data[0].response.state);
-        setTourData(res.data[0].response.tourdetails);
-        setCategory(res.data[0].response.category);
-        setPanoSetting(res.data[0].response.panorama);
-        setSlideSetting(res.data[0].response.slideshow);
-      }
-    });
-  }, [AgnetID, ThemeId]);
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgnetID,
-      tourid: ThemeId,
+      tourid: tourid,
     };
     postRecord(APIGetTourInfo, objusr).then((res) => {
       if (res.data[0].response === "success") {
@@ -170,11 +184,10 @@ export default function ThemeTemplate4(props) {
     const objusr = {
       authenticate_key: "abcd123XYZ",
       agentId: AgnetID,
-      tourid: ThemeId,
+      tourid: tourid,
     };
     postRecord(APIGetTourInfo, objusr).then((res) => {
       if (res.data[0].response.status === "success") {
-        console.log("Hiii");
         //setTourInfo(res.data[0].response.dataDetails.dataProvider)
         setImageData(res.data[0].response.dataDetails.dataProvider);
         setVideoData(res.data[0].response.dataDetails.dataProvider2);
@@ -183,7 +196,7 @@ export default function ThemeTemplate4(props) {
         setFloorPlandata(res.data[0].response.dataDetails.dataProvider4);
       }
     });
-  }, [AgnetID, ThemeId, floorPlanData]);
+  }, [AgnetID, tourid]);
   // console.log(floorPlanData);
   useEffect(() => {
     const obj = { authenticate_key: "abcd123XYZ" };
@@ -232,7 +245,7 @@ export default function ThemeTemplate4(props) {
   };
   const CalculateMortgage = () => {
     mortgageData.authenticate_key = "abcd123XYZ";
-    mortgageData.tourId = ThemeId;
+    mortgageData.tourId = tourid;
     console.log(mortgageData);
     postRecord(APIGetMortgageCalculator, mortgageData).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -363,7 +376,7 @@ export default function ThemeTemplate4(props) {
   const sendMailAgent = () => {
     setOpen(true);
     sendMail.authenticate_key = "abcd123XYZ";
-    sendMail.tourId = ThemeId;
+    sendMail.tourId = tourid;
     sendMail.agentId = AgnetID;
     postRecord(APIGetContactAgent, sendMail).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -392,7 +405,7 @@ export default function ThemeTemplate4(props) {
   };
   const scheduleAppointment = () => {
     amenityData.authenticate_key = "abcd123XYZ";
-    amenityData.tourId = ThemeId;
+    amenityData.tourId = tourid;
     setOpen(true);
     postRecord(APIGetScheduleAppointment, amenityData).then((res) => {
       console.log(res);
@@ -423,6 +436,18 @@ export default function ThemeTemplate4(props) {
       ))}
     </ul>
   );
+  const features = useRef(null);
+  const photos = useRef(null);
+  const location = useRef(null);
+  const presentedBy = useRef(null);
+  const contact = useRef(null);
+
+  const scrollToElement = (e, elementRef) => {
+    e.preventDefault();
+    if (elementRef.current) {
+      elementRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <>
       <div class="wrapper theme4" id="home">
@@ -519,17 +544,17 @@ export default function ThemeTemplate4(props) {
                             <a href="#home">Home</a>
                           </li>
                           <li>
-                            <a href="#features">Features</a>
+                            <a href="#"  onClick={(e)=>scrollToElement(e,features)}>Features</a>
                           </li>
                           <li>
-                            <a href="#photos">Photos</a>
+                            <a href="#"  onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
                           </li>
-                          <li>
-                            <a href="#">Location</a>
-                          </li>
-                          <li>
-                            <a href="#PresentedBy">Presented By</a>
-                          </li>
+                          {!strict && <li>
+                            <a href="#"  onClick={(e)=>scrollToElement(e,location)}>Location</a>
+                          </li>}
+                          {!strict && !mls && <li>
+                            <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
+                          </li>}
                           <li>
                             <a href="#">Details</a>
                             <ul>
@@ -558,8 +583,9 @@ export default function ThemeTemplate4(props) {
                               </li>
                             </ul>
                           </li>
+                          {!mls && !strict && <>
                           <li>
-                            <a href="#">Contact</a>
+                            <a href="#" onClick={(e)=>scrollToElement(e,contact)}>Contact</a>
                             <ul>
                               <li>
                                 <a
@@ -631,7 +657,7 @@ export default function ThemeTemplate4(props) {
                                 </a>
                               </li>
                             </ul>
-                          </li>
+                          </li></>}
                         </ul>
                       </nav>
                     </div>
@@ -671,7 +697,7 @@ export default function ThemeTemplate4(props) {
             </div>
           </div>
         </div>
-        <div class="property_details" id="features">
+        {!strict && <div class="property_details" id="features" ref={features}>
           <div class="property_details_left">
             <div class="page_title">
               <h4>Property Details</h4>
@@ -900,12 +926,13 @@ export default function ThemeTemplate4(props) {
               frameborder="0"
             ></iframe>
           </div>
-        </div>
+        </div>}
 
         {/* <!--=========================== Gallery ===========================--> */}
         <div
           class=""
           id="location"
+          ref={location}
           style={{
             backgroundImage: "url(" + bg4 + ")",
             backgroundPosition: "fixed",
@@ -942,7 +969,7 @@ export default function ThemeTemplate4(props) {
         </div>
         <hr class="spacer1px" />
         {imageData.length >0 ?
-        <div class="bodycontent_gallery" id="photos">
+        <div class="bodycontent_gallery" id="photos" ref={photos}>
           <h4>Photo Gallery</h4>
           <ul>
             {imageData.map((res) => (
@@ -966,7 +993,7 @@ export default function ThemeTemplate4(props) {
                         <a
                           class="example-image-link"
                           onClick={() => ImageModal(res.imageurl)}
-                          data-title="Title Goes Here"
+                          data-title={res.caption}
                         >
                           <img src={imageIcons} alt="" />
                         </a>
@@ -1111,7 +1138,7 @@ export default function ThemeTemplate4(props) {
         :''}
         <hr class="spacer1px" />
         {/* <!--=========================== Direction ===========================--> */}
-        <div class="presentedby_map">
+        {!strict && <div class="presentedby_map">
           <div class="presentedby_map_left">
             <div class="page_title">
               <h4 class="white">Property Location</h4>
@@ -1132,8 +1159,8 @@ export default function ThemeTemplate4(props) {
               </div>
             </div>
           </div>
-          <div class="presentedby_map_right presentedby_left">
-            <div class="page_title" id="PresentedBy">
+          {!mls && !strict && <div class="presentedby_map_right presentedby_left">
+            <div class="page_title" id="PresentedBy" ref={presentedBy}>
               <h4 class="white">Presented By</h4>
             </div>
             <div class="row ">
@@ -1203,7 +1230,7 @@ export default function ThemeTemplate4(props) {
                 <hr class=" spacer20px" />
               </div>
             </div>
-            <div class="row ">
+           {Object.keys(coAgentData).length > 0 && <div class="row ">
               <div class="col-sm-4 agent_img">
                 {Object.keys(coAgentData).length > 0 ? (
                   <img
@@ -1269,7 +1296,7 @@ export default function ThemeTemplate4(props) {
                 )}
                 <hr class=" spacer20px" />
               </div>
-            </div>
+            </div>}
             <hr class=" spacer20px" />
             <div class="row">
               <div class="col-sm-12">
@@ -1286,11 +1313,11 @@ export default function ThemeTemplate4(props) {
                 </a>
               </div>
             </div>
-          </div>
-        </div>
+          </div>}
+        </div>}
         <hr class="spacer1px" />
         {/* <!--=========================== Contact ===========================--> */}
-        <section class="section bg-light" id="contact">
+        {!mls && !strict && <section class="section bg-light" id="contact" ref={contact}>
           <div class="container">
             <div class="row">
               <div class="col-lg-12 text-center">
@@ -1398,7 +1425,7 @@ export default function ThemeTemplate4(props) {
               </div>
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* <!--=========================== Footer ===========================--> */}
         <div class="bodycontent_footerbtm">

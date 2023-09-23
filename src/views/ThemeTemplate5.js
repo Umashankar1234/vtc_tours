@@ -65,13 +65,26 @@ export default function ThemeTemplate5(props) {
     zoom: 11,
   };
   const classes = useStyles();
-  const TourId = props.match.params.tourid;
-  const AgentId = props.match.params.agentid;
-  const themeid = props.match.params.themeid;
-  //console.log(props);
+  const allImages = props.allImages;
+  const AgentId = props.agentId;
+  const ThemeId = props.themeId;
+  const tourid = props.tourid;
+  // const AgnetID = props.AgentId;
+  // const ThemeId = props.ThemeId;
+  // const agentProfile = props.agentProfile;
+  const amenities = props.amenities;
+  const music = props.music;
+  const tourData = props.tourData;
+  const statename = props.statename;
+  const category = props.category;
+  const panoSetting = props.panoSetting;
+  const slideSetting = props.slideSetting;
+  const coAgentData = props.coAgentData;
+  // const setAgentProfile = props.setAgentProfile;
+  const agentData = props.agentProfile;
   let history = useHistory();
   const [color, setcolor] = useState({});
-  const [coAgentData, setCoAgentData] = useState([]);
+  // const [coAgentData, setCoAgentData] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [banner, setBanner] = useState("");
   const [companyInformation, setCompanyInformation] = useState({});
@@ -107,15 +120,14 @@ export default function ThemeTemplate5(props) {
   const [mlsLink, setMlsLink] = useState({});
   const [agentProfile, setAgentProfile] = useState("");
   const [allVideos, setAllVideos] = useState({});
-  const [allImages, setAllImages] = useState({});
-  const [amenities, setAmenities] = useState({});
-  const [agentData, setAgentData] = useState({});
-  const [tourData, setTourData] = useState({});
+  // const [amenities, setAmenities] = useState({});
+  // const [agentData, setAgentData] = useState({});
+  // const [tourData, setTourData] = useState({});
   const [galleryImages, setGalleryImages] = useState([]);
   const [openGallery, setOpenGallery] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [category, setCategory] = useState("");
-  const [slideSetting, setSlideSetting] = useState({});
+  // const [category, setCategory] = useState("");
+  // const [slideSetting, setSlideSetting] = useState({});
   useEffect(() => {
     const objusr = { authenticate_key: "abcd123XYZ", agent_id: AgentId };
     postRecord(APIGetUserData, objusr).then((res) => {
@@ -151,37 +163,37 @@ export default function ThemeTemplate5(props) {
     const objusr = {
       authenticate_key: "abcd123XYZ",
       agentId: AgentId,
-      tourid: TourId,
+      tourid: tourid,
     };
     postRecord(APIGetTourInfo, objusr).then((res) => {
       if (res.data[0].response.status === "success") {
         setTourDetailsData(res.data[0].response.dataDetails.tourdetails);
       }
     });
-  }, [AgentId, themeid]);
+  }, [AgentId, tourid]);
 
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgentId,
-      tourid: TourId,
-    };
-    postRecord(APIGetTourDetails, objusr).then((res) => {
-      if (res.data[0].response.status === "success") {
-        setTourData(res.data[0].response.tourdetails);
-        setcolor(res.data[0].response.Style);
-        setAllImages(res.data[0].response.dataProvider);
-        setAmenities(res.data[0].response.amenities);
-        setAgentData(res.data[0].response.agentDetails);
-        setCoAgentData(res.data[0].response.coAgentData);
-        setCategory(res.data[0].response.category);
-        setSlideSetting(res.data[0].response.slideshow);
-        if (res.data[0].response.dataProvider2.length > 0) {
-          setAllVideos(res.data[0].response.dataProvider2[0]);
-        }
-      }
-    });
-  }, [AgentId, TourId]);
+  // useEffect(() => {
+  //   const objusr = {
+  //     authenticate_key: "abcd123XYZ",
+  //     agentId: AgentId,
+  //     tourid: tourid,
+  //   };
+  //   postRecord(APIGetTourDetails, objusr).then((res) => {
+  //     if (res.data[0].response.status === "success") {
+  //       setTourData(res.data[0].response.tourdetails);
+  //       setcolor(res.data[0].response.Style);
+  //       setAllImages(res.data[0].response.dataProvider);
+  //       setAmenities(res.data[0].response.amenities);
+  //       setAgentData(res.data[0].response.agentDetails);
+  //       setCoAgentData(res.data[0].response.coAgentData);
+  //       setCategory(res.data[0].response.category);
+  //       setSlideSetting(res.data[0].response.slideshow);
+  //       if (res.data[0].response.dataProvider2.length > 0) {
+  //         setAllVideos(res.data[0].response.dataProvider2[0]);
+  //       }
+  //     }
+  //   });
+  // }, [AgentId, tourid]);
   const options2 = {
     lazyLoad: true,
     loop: true,
@@ -235,7 +247,7 @@ export default function ThemeTemplate5(props) {
     const obj = {
       authenticate_key: "abcd123XYZ",
       agent_id: AgentId,
-      tourId: TourId,
+      tourId: tourid,
     };
     postRecord(APIOtherLink, obj).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -246,12 +258,12 @@ export default function ThemeTemplate5(props) {
         setOpenError(true);
       }
     });
-  }, [AgentId, TourId]);
+  }, [AgentId, tourid]);
   useEffect(() => {
     const obj = {
       authenticate_key: "abcd123XYZ",
       agent_id: AgentId,
-      tourId: TourId,
+      tourId: tourid,
     };
     postRecord(APITourService, obj).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -261,7 +273,7 @@ export default function ThemeTemplate5(props) {
         setOpenError(true);
       }
     });
-  }, [AgentId, TourId]);
+  }, [AgentId, tourid]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -288,10 +300,11 @@ export default function ThemeTemplate5(props) {
       }
     }
   }
+  console.log(agentData);
   const viewFlyer = () => {
-    // history.push(APIPath() + "agent-view-flyer-active/" + TourId + "/" + AgentId);
+    // history.push(APIPath() + "agent-view-flyer-active/" + tourid + "/" + AgentId);
     window.open(
-      APIPath() + "agent-view-flyer-active/" + TourId + "/" + AgentId,
+      APIPath() + "agent-view-flyer-active/" + tourid + "/" + AgentId,
       "_blank"
     );
   };
@@ -301,12 +314,12 @@ export default function ThemeTemplate5(props) {
   };
   const ListingPage = () => {
     window.open(
-      APIPath() + "agent-my-listing/" + AgentId + "/" + TourId,
+      APIPath() + "agent-my-listing/" + AgentId + "/" + tourid,
       "_blank"
     );
   };
   const SaveToDesktop = () => {
-    const objusr = { authenticate_key: "abcd123XYZ", tourId: TourId };
+    const objusr = { authenticate_key: "abcd123XYZ", tourId: tourid };
     postRecord(APISaveToDeskTop, objusr).then((res) => {
       if (res.data[0].response.status === "success") {
         var url = res.data[0].response.data.zip_link;
@@ -320,7 +333,7 @@ export default function ThemeTemplate5(props) {
   };
   const CalculateMortgage = () => {
     mortgageData.authenticate_key = "abcd123XYZ";
-    mortgageData.tourId = TourId;
+    mortgageData.tourId = tourid;
     postRecord(APIGetMortgageCalculator, mortgageData).then((res) => {
       if (res.data[0].response.status === "success") {
         setMortgageData(res.data[0].response);
@@ -354,7 +367,7 @@ export default function ThemeTemplate5(props) {
   };
   const scheduleAppointment = () => {
     amenityData.authenticate_key = "abcd123XYZ";
-    amenityData.tourId = TourId;
+    amenityData.tourId = tourid;
     setOpen(true);
     postRecord(APIGetScheduleAppointment, amenityData).then((res) => {
       if (res.data[0].response.status === "success") {
@@ -383,7 +396,7 @@ export default function ThemeTemplate5(props) {
     }
     csvFile.authenticate_key = "abcd123XYZ";
     csvFile.agent_id = AgentId;
-    csvFile.tourId = TourId;
+    csvFile.tourId = tourid;
     csvFile.emails = currentEmail.emails;
     const formData = new FormData();
     for (let i in csvFile) {
@@ -434,12 +447,13 @@ export default function ThemeTemplate5(props) {
       }
     });
   };
+  console.log(agentData,"agentData");
   return (
     <>
-      <div class="container">
+      <div class="container" className={`container th${ThemeId}`}>
         <div class="row">
           <div class="col-lg-12 p-0">
-            {Object.keys(agentData).length > 0 ? (
+            {agentData && Object.keys(agentData).length > 0 ? (
               <img
                 src={agentData.company_details.companybanner}
                 alt=""
@@ -718,7 +732,7 @@ export default function ThemeTemplate5(props) {
                     <div class="profile-blue-main">
                       <div class="profile-blue" style={color}>
                         <div class="profile-blue-left">
-                          {Object.keys(agentData).length > 0 ? (
+                          {agentData && Object.keys(agentData).length > 0 ? (
                             <img
                               src={agentData.agent_profile.profile_img}
                               alt=""
@@ -728,7 +742,7 @@ export default function ThemeTemplate5(props) {
                           )}
                         </div>
                         <div class="profile-blue-right">
-                          {Object.keys(agentData).length > 0 ? (
+                          {agentData && Object.keys(agentData).length > 0 ? (
                             <h3>{agentData.agent_profile.name}</h3>
                           ) : (
                             <Skeleton
@@ -741,7 +755,7 @@ export default function ThemeTemplate5(props) {
                           {/* <p>Test New Company
                                                         <br />
                                                         maastest3@gmail.com</p> */}
-                          {Object.keys(agentData).length > 0 ? (
+                          {agentData && Object.keys(agentData).length > 0 ? (
                             <p>{agentData.company_details.company}</p>
                           ) : (
                             <Skeleton
@@ -751,7 +765,7 @@ export default function ThemeTemplate5(props) {
                               style={{ background: "#bbbbbb" }}
                             />
                           )}
-                          {Object.keys(agentData).length > 0 ? (
+                          {agentData && Object.keys(agentData).length > 0 ? (
                             <p style={{ fontSize: "13px" }}>
                               {agentData.email}
                             </p>
@@ -769,7 +783,7 @@ export default function ThemeTemplate5(props) {
                         <ul>
                           <li>
                             <label>Mobile</label>
-                            {Object.keys(agentData).length > 0 ? (
+                            {agentData && Object.keys(agentData).length > 0 ? (
                               <p>{agentData.mobile}</p>
                             ) : (
                               <Skeleton
@@ -782,7 +796,7 @@ export default function ThemeTemplate5(props) {
                           </li>
                           <li>
                             <label>Office</label>
-                            {Object.keys(agentData).length > 0 ? (
+                            {agentData && Object.keys(agentData).length > 0 ? (
                               <p>{agentData.company_details.officephone}</p>
                             ) : (
                               <Skeleton
@@ -795,7 +809,7 @@ export default function ThemeTemplate5(props) {
                           </li>
                           <li>
                             <label>Agent Lic#</label>{" "}
-                            {Object.keys(agentData).length > 0 ? (
+                            {agentData && Object.keys(agentData).length > 0 ? (
                               <p>{agentData.licenceno}</p>
                             ) : (
                               <Skeleton
@@ -809,7 +823,7 @@ export default function ThemeTemplate5(props) {
                         </ul>
                       </div>                      
                     </div>
-                    <div class="profile-blue-main">
+                   {Object.keys(coAgentData).length > 0 && <div class="profile-blue-main">
                       <div class="profile-blue" style={color}>
                         <div class="profile-blue-left">
                           {Object.keys(coAgentData).length > 0 ? (
@@ -886,7 +900,7 @@ export default function ThemeTemplate5(props) {
                             : ""}
                         </h6>
                       </div>
-                    </div>
+                    </div>}
                   </div>
                   <div class="col-lg-8">
                     <div class="social-media" style={color}>
