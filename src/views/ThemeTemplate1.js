@@ -17,19 +17,13 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Parllel from "../images/pause-btn-parallax.png";
 import playbtn from "../images/playbtn-parallax.png";
-import videobg from "../images/videobg.jpg";
 import playicon from "../images/playicon.png";
 import banner1 from "../images/banner1.jpg";
-import banner2 from "../images/banner2.jpg";
-import banner3 from "../images/banner3.jpg";
-import aboutbg from "../images/aboutbg.jpg";
+import zoomIcon from "../images/zoomicon.png";
 import headerLogo from "../images/header-logo.jpg";
 import zoom from "../images/zoom1.png";
 import vtcLogo from "../images/VTC-logo.png";
-import profilePhoto from "../images/profilephoto.jpg";
-import floorplans from "../images/floorplans.jpg";
 import patternbg1 from "../images/patternbg1.jpg";
-import bodybg1 from "../images/bodybg1.png";
 import title1 from "../images/title1.png";
 import title2 from "../images/title2.png";
 import "lightgallery/css/lightgallery.css";
@@ -39,9 +33,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import CancelIcon from "@material-ui/icons/Cancel";
-import lgThumbnail from "lightgallery/plugins/thumbnail";
-import photo from "../images/photos.jpg";
-import svg1 from "../images/43.svg";
 import ReactImageZoom from "react-image-zoom";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -54,13 +45,11 @@ import {
 import { useRef } from "react";
 const APIGetUserData = APIURL() + "user-details";
 
-const APIGetTourDetails = APIURL() + "tour-details";
 const APIGetTourInfo = APIURL() + "get-Tourinfo";
 const APIGetMortgageCalculator = APIURL() + "get-Mortgage-Calculator";
 const APIGetSocialIconLink = APIURL() + "getsocialicons";
 const APIGetContactAgent = APIURL() + "get-Contact-Agent";
 const APIGetScheduleAppointment = APIURL() + "get-scheduleMail";
-const APIGetFloorList = APIURL() + "edit-floor-Plans";
 const options = {
   lazyLoad: true,
   loop: true,
@@ -98,54 +87,54 @@ const options = {
     },
   },
 };
-const useStyles = makeStyles((theme) => ({
-  page_title: {
-    position: "relative",
-    textAlign: "center",
-    "& h3::after": {
-      backgroundImage: "url(" + title1 + ")",
-      content: "",
-      display: "inline-block",
-      position: "absolute",
-      textAlign: "center",
-      right: "0",
-      left: "0",
-      bottom: "-20px",
-      margin: "0 auto",
-      height: "17px",
-      width: "175px",
+const options3 = {
+  lazyLoad: true,
+  loop: true,
+  margin: 20,
+  responsiveClass: true,
+  animateOut: "fadeOut",
+  animateIn: "fadeIn",
+  autoplay: true,
+  autoplayTimeout: 20000,
+  autoplayHoverPause: false,
+  mouseDrag: true,
+  touchDrag: true,
+  smartSpeed: 10000,
+  nav: true,
+  dots: false,
+  navText: [
+    "<i class='far fa-chevron-left sp'></i>",
+    "<i class='far fa-chevron-right sp'></i>",
+  ],
+  responsive: {
+    0: {
+      items: 1,
+    },
+
+    600: {
+      items: 1,
+    },
+
+    1024: {
+      items: 1,
+    },
+
+    1366: {
+      items: 1,
     },
   },
-  page_title2: {
-    position: "relative",
-    textAlign: "center",
-    "& h3::after": {
-      backgroundImage: "url(" + title2 + ")",
-      content: "",
-      display: "inline-block",
-      position: "absolute",
-      textAlign: "center",
-      right: "0",
-      left: "0",
-      bottom: "-20px",
-      margin: "0 auto",
-      height: "17px",
-      width: "175px",
-    },
-  },
-}));
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+};
+
 const initialMorgageData = {
   length: "",
   rate: "",
   price: "",
   downpayment: "",
 };
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
 export default function Themetemplate1(props) {
   const AgnetID = props.AgentId;
+  const threeDs = props.threeDs;
+  const documents = props.documents;
   const mls = props.mls;
   const strict = props.strict;
   const ThemeId = props.ThemeId;
@@ -162,11 +151,45 @@ export default function Themetemplate1(props) {
 
   const features = useRef(null);
   const photos = useRef(null);
+  const panorama = useRef(null);
+  const videos = useRef(null);
   const location = useRef(null);
   const presentedBy = useRef(null);
   const contact = useRef(null);
+  const floorPlans = useRef(null);
+  const ThreeD = useRef(null);
 
-  const scrollToElement = (e,elementRef) => {
+  const size = useWindowSize();
+  const [mobileClass, setMobileClass] = useState("small-screen");
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (size.width <= 768) {
+      console.log("Adding mobileClass");
+      setMobileClass("small-screen");
+      setShow(false);
+    } else {
+      console.log("removing mobileClass");
+      setMobileClass("");
+      setShow(true);
+    }
+  }, [size]);
+  useEffect(() => {
+    setShow(false);
+  }, []);
+
+  useEffect(() => {
+    const obj = { authenticate_key: "abcd123XYZ" };
+    postRecord(APIGetSocialIconLink, obj).then((res) => {
+      if (res.data[0].response.status === "success") {
+        //setIconData(res.data[0].response);
+        setFacebookLink(res.data[0].response.data[2].link);
+        setTwitterLink(res.data[0].response.data[0].link);
+        setYoutubeLink(res.data[0].response.data[1].link);
+      }
+    });
+  }, []);
+  const scrollToElement = (e, elementRef) => {
     e.preventDefault();
     if (elementRef.current) {
       elementRef.current.scrollIntoView({ behavior: "smooth" });
@@ -187,12 +210,10 @@ export default function Themetemplate1(props) {
     },
   }));
   const { dispatch } = useContext(AuthContext);
-  const context = useContext(AuthContext);
   const classes = useStyles();
   // const [coAgentData, setCoAgentData] = useState([]);
   // const [statename, setstatename] = useState(false);
 
-  let history = useHistory();
   const [sync, setSync] = useState(true);
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -204,6 +225,7 @@ export default function Themetemplate1(props) {
   const [tourDetailsData, setTourDetailsData] = useState({});
   const [openAgentinfo, setopenAgentInfo] = useState(false);
   const [imageData, setImageData] = useState([]);
+  const [openHouseModal, setOpenHouseModal] = useState(false);
   const [videoData, setVideoData] = useState([]);
   const [openContactinfo, setopenContactInfo] = useState(false);
   const [openAppointment, setopenAppointment] = useState(false);
@@ -231,6 +253,7 @@ export default function Themetemplate1(props) {
   const [openVideoModal, setOpenVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [mortgageResult, setMortgageResult] = useState({});
+
   // const [category, setCategory] = useState("");
   // const [panoSetting, setPanoSetting] = useState({});
   // const [slideSetting, setSlideSetting] = useState({});
@@ -355,11 +378,11 @@ export default function Themetemplate1(props) {
       },
 
       600: {
-        items: 2,
+        items: 1,
       },
 
       1024: {
-        items: 3,
+        items: 1,
       },
 
       1366: {
@@ -418,17 +441,7 @@ export default function Themetemplate1(props) {
       }
     });
   };
-  useEffect(() => {
-    const obj = { authenticate_key: "abcd123XYZ" };
-    postRecord(APIGetSocialIconLink, obj).then((res) => {
-      if (res.data[0].response.status === "success") {
-        //setIconData(res.data[0].response);
-        setFacebookLink(res.data[0].response.data[2].link);
-        setTwitterLink(res.data[0].response.data[0].link);
-        setYoutubeLink(res.data[0].response.data[1].link);
-      }
-    });
-  }, []);
+
   const MortgageCalclulator = () => {
     CalculateMortgage();
   };
@@ -537,29 +550,65 @@ export default function Themetemplate1(props) {
   const handleWebsite = () => {
     window.open("http://" + agentProfile.company_details.website, "_blank");
   };
+  const downloadDoc = (fileLink, name) => {
+    const link = document.createElement("a");
+    link.href = fileLink;
+    link.setAttribute("download", name);
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  // =============responsive navbar=======================================
+
+  // ====================-----------------------------======================
+
   return (
     <>
-      <div class="leftpan_fix">
+      <div class="leftpan_fix theme-two">
         <img src={headerLogo} alt="" />
-        <nav id="cssmenu" class="head_btm_menu">
-          <ul>
+        <nav id="cssmenu" className={`head_btm_menu ${mobileClass}`}>
+          <div id="menu-button" onClick={() => setShow(!show)}></div>
+          <ul style={{ display: show ? "block" : "" }}>
             <li>
               <a href="#home">Home</a>
             </li>
             <li>
-              <a href="#" onClick={(e)=>scrollToElement(e,features)}>Features</a>
+              <a href="#" onClick={(e) => scrollToElement(e, features)}>
+                Features
+              </a>
             </li>
             <li>
-              <a href="#" onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
+              <a href="#" onClick={(e) => scrollToElement(e, photos)}>
+                Photos
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={(e) => scrollToElement(e, panorama)}>
+                Panorama
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={(e) => scrollToElement(e, videos)}>
+                Videos
+              </a>
             </li>
             {!strict && (
               <li>
-                <a href="#" onClick={(e)=>scrollToElement(e,location)}>Location</a>
+                <a href="#" onClick={(e) => scrollToElement(e, location)}>
+                  Location
+                </a>
               </li>
             )}
+            <li>
+              <a href="#" onClick={(e) => scrollToElement(e, floorPlans)}>
+                Floor Plans
+              </a>
+            </li>
             {!mls && !strict && (
               <li>
-                <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
+                <a href="#" onClick={(e) => scrollToElement(e, presentedBy)}>
+                  Presented By
+                </a>
               </li>
             )}
             <li>
@@ -591,7 +640,9 @@ export default function Themetemplate1(props) {
             {!mls && !strict && (
               <>
                 <li>
-                  <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Contact</a>
+                  <a href="#" onClick={(e) => scrollToElement(e, presentedBy)}>
+                    Contact
+                  </a>
                   <ul>
                     <li>
                       <a
@@ -699,14 +750,23 @@ export default function Themetemplate1(props) {
                         </div>
                       </div>
                     ))}
+                    {videoData.map((res) => (
+                      <div class="carousel-item active">
+                        <video
+                          src={res.videurl}
+                          autoPlay
+                          muted
+                          // onClick={(e) => e.target.play()}
+                        />
+                      </div>
+                    ))}
                   </OwlCarousel>
                 ) : (
                   ""
                 )}
               </div>
 
-                        
-              <div class="full_width" id="features" ref={features} >
+              <div class="full_width" id="features" ref={features}>
                 <div class="full_width_inner">
                   <div class="frontext">
                     <div class="container">
@@ -731,7 +791,7 @@ export default function Themetemplate1(props) {
 
                   <hr class="spacer1px" />
                   {!strict && (
-                    <div class="property_details">
+                    <div class="property_details" ref={ThreeD}>
                       <div class="property_details_left">
                         <div class="page_title">
                           <h3>Property Details</h3>
@@ -976,36 +1036,102 @@ export default function Themetemplate1(props) {
                           </div>
                         </div>
                       </div>
-                      <div class="property_details_right">
-                        <iframe
-                          src="https://my.matterport.com/show/?m=AboxaMW9c5Z"
-                          allowfullscreen=""
-                          width="853"
-                          height="480"
-                          frameborder="0"
-                        ></iframe>
+                      {threeDs?.code1 || threeDs?.code1 ? (
+                        <div
+                          class="property_details_right"
+                          dangerouslySetInnerHTML={{
+                            __html: threeDs?.code1
+                              ? threeDs?.code1
+                              : threeDs?.code2,
+                          }}
+                        ></div>
+                      ) : (
+                        <div class="property_details_right">
+                          <img
+                            src={imageData[0]?.imageurl}
+                            alt="first pict"
+                            style={{
+                              objectFit: "cover",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {documents && documents.length > 0 ? (
+                    <div class="property_location bg-bg">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="page_title">
+                              <h3 class="bg-color">Documents</h3>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          {documents &&
+                            documents.length > 0 &&
+                            documents.map((res) => (
+                              <div class="col-md-4 m-auto">
+                                <div class="callbacks_container">
+                                  <li>
+                                    <div class="gallerybox">
+                                      <div class="image-holder video-holder">
+                                        <img
+                                          src="https://virtualtourcafe.com/images/documents.png?1590647111"
+                                          style={{
+                                            marginTop: "-18px",
+                                            height: "100%",
+                                          }}
+                                        />
+
+                                        <span class="gallery_title">Doc</span>
+                                        <div class="overlay">
+                                          <div class="button">
+                                            <a
+                                              onClick={() =>
+                                                downloadDoc(
+                                                  res.doc_link,
+                                                  res.doc_name
+                                                )
+                                              }
+                                              data-title={res.doc_name}
+                                            >
+                                              <p>Doc</p>
+                                              <img src={zoomIcon} alt="" />
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     </div>
+                  ) : (
+                    ""
                   )}
                   <hr class="spacer1px" />
                   {/* <!--============= Photo Gallery ================--> */}
                   {imageData.length > 0 ? (
                     <div
-                      class="photogallery"
+                      class="photogallery bg-bg"
                       id="photos"
                       ref={photos}
                       style={{
                         backgroundImage: "url(" + patternbg1 + ")",
-                        backgroundPosition: "fixed",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
                       }}
                     >
                       <div class="container">
                         <div class="row">
                           <div class="col-sm-12">
                             <div class="page_title2">
-                              <h3>Photo Gallery</h3>
+                              <h3 class="bg-color">Photo Gallery</h3>
                             </div>
                           </div>
                         </div>
@@ -1087,7 +1213,7 @@ export default function Themetemplate1(props) {
                                               </a>
                                               <div class="overlay">
                                                 <div class="button">
-                                                  <p>Title Goes Here</p>
+                                                  <p>{res.caption}</p>
                                                   <a
                                                     onClick={() =>
                                                       ImageModal(res.imageurl)
@@ -1114,13 +1240,128 @@ export default function Themetemplate1(props) {
                   )}
                   <hr class="spacer1px" />
                   {/* <!--============= Floor Plans Gallery ================--> */}
+                  {floorPlanData.length > 0 ? (
+                    <div class="photogallery" id="photos" style={{}}>
+                      <div class="container" ref={floorPlans}>
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="page_title2">
+                              <h3>Floor Plans</h3>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="floor-pl">
+                              <OwlCarousel
+                                margin={10}
+                                {...options3}
+                                class="gallery-design1 owl-carousel"
+                              >
+                                {Object.keys(floorPlanData).length > 0
+                                  ? floorPlanData.map((res) => (
+                                      <li
+                                        data-src={res.imageurl}
+                                        data-sub-html="<p>trafficreport</p>"
+                                      >
+                                        <div class="gallerybox">
+                                          <div
+                                            class="image-holder"
+                                            style={{ height: "300px" }}
+                                          >
+                                            <a href={res.imageurl}>
+                                              <img
+                                                alt="img1"
+                                                src={res.imageurl}
+                                              />
+                                            </a>
+                                            <div
+                                              class="overlay"
+                                              style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                              }}
+                                            >
+                                              <div class="button">
+                                                <p>{res.caption}</p>
+                                                <a
+                                                  onClick={() =>
+                                                    ImageModal(res.imageurl)
+                                                  }
+                                                >
+                                                  <img src={zoom} alt="" />
+                                                </a>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    ))
+                                  : ""}
+                              </OwlCarousel>
+                            </div>
+                            <div class="without_slider_gallery">
+                              <ul
+                                class="photo-lightgallery"
+                                id="lightgallery"
+                                style={{ marginTop: "20px" }}
+                              >
+                                <LightGallery
+                                  elementClassNames="custom-wrapper-class"
+                                  onBeforeSlide={onBeforeSlide}
+                                  plugins={[lgZoom, lgVideo]}
+                                >
+                                  {Object.keys(floorPlanData).length > 0
+                                    ? floorPlanData.map((res) => (
+                                        <li
+                                          data-src={res.imageurl}
+                                          data-sub-html="<p>trafficreport</p>"
+                                        >
+                                          <div class="gallerybox">
+                                            <div
+                                              class="image-holder"
+                                              style={{ height: "250px" }}
+                                            >
+                                              <a href={res.imageurl}>
+                                                <img
+                                                  alt="img1"
+                                                  src={res.imageurl}
+                                                />
+                                              </a>
+                                              <div class="overlay">
+                                                <div class="button">
+                                                  <a
+                                                    onClick={() =>
+                                                      ImageModal(res.imageurl)
+                                                    }
+                                                  >
+                                                    <img src={zoom} alt="" />
+                                                  </a>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      ))
+                                    : ""}
+                                </LightGallery>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {/* <!--============= Floor Plans Gallery ================--> */}
                   {videoData.length > 0 ? (
-                    <div class="property_location">
+                    <div class="property_location bg-bg" ref={videos}>
                       <div class="container">
                         <div class="row">
                           <div class="col-sm-12">
                             <div class="page_title">
-                              <h3>Video Gallery</h3>
+                              <h3 class="bg-color">Video Gallery</h3>
                             </div>
                           </div>
                         </div>
@@ -1130,22 +1371,13 @@ export default function Themetemplate1(props) {
                               <div class="callbacks_container">
                                 <li>
                                   <div class="gallerybox">
-                                    <div class="image-holder">
-                                      <img
-                                        src={videobg}
-                                        alt="Services"
-                                        class="image"
-                                      />
+                                    <div class="image-holder video-holder">
+                                      <img src={res.thumbnail} alt="" />
+
                                       <span class="gallery_title">Video</span>
                                       <div class="overlay">
                                         <div class="button">
-                                          <p>Title Goes Here</p>
-                                          <a
-                                            onClick={() =>
-                                              setVideoModal(res.videurl)
-                                            }
-                                            data-title="Title Goes Here"
-                                          >
+                                          <a onClick={() => setVideoModal(res)}>
                                             <img src={playicon} alt="" />
                                           </a>
                                         </div>
@@ -1162,57 +1394,49 @@ export default function Themetemplate1(props) {
                   ) : (
                     ""
                   )}
+
                   <hr class="spacer1px" />
-                  <div
-                    class="photogallery"
-                    style={{
-                      backgroundImage: "url(" + patternbg1 + ")",
-                      backgroundPosition: "fixed",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                    }}
-                  >
+                  <div class="photogallery Panorama-gal" style={{}}>
                     {panoromaData.length > 0 ? (
-                      <div class="container">
+                      <div class="container" ref={panorama}>
                         <div class="row">
                           <div class="col-sm-12">
                             <div class="page_title2">
-                              <h3>Panorama Gallery</h3>
+                              <h3 class="bg-color">Panorama Gallery</h3>
                             </div>
                           </div>
-                          <div class="row">
-                            {panoromaData.map((res) => (
-                              <div class="col-md-6 m-auto">
-                                <div class="callbacks_container">
-                                  <li
-                                    data-src={res.panurl}
-                                    data-sub-html="<p>trafficreport</p>"
-                                  >
-                                    <div class="gallerybox">
-                                      <div class="image-holder">
-                                        <a href={res.panurl}>
-                                          <img alt="img1" src={res.panurl} />
-                                        </a>
-                                        <div class="overlay">
-                                          <div
-                                            class="button"
-                                            onClick={() =>
-                                              setPanoModal(res.panurl)
-                                            }
-                                          >
-                                            <p>Title Goes Here</p>
-                                            <a href="#">
-                                              <img src={zoom} alt="" />
-                                            </a>
-                                          </div>
+                        </div>
+                        <div class="row justify-content-center">
+                          {panoromaData.map((res) => (
+                            <div class="col-md-6 mb-3">
+                              <div class="callbacks_container">
+                                <li
+                                  data-src={res.panurl}
+                                  data-sub-html="<p>trafficreport</p>"
+                                >
+                                  <div class="gallerybox">
+                                    <div class="image-holder">
+                                      <a href={res.panurl}>
+                                        <img alt="img1" src={res.panurl} />
+                                      </a>
+                                      <div class="overlay">
+                                        <div
+                                          class="button"
+                                          onClick={() =>
+                                            setPanoModal(res.panurl)
+                                          }
+                                        >
+                                          <a>
+                                            <img src={zoom} alt="" />
+                                          </a>
                                         </div>
                                       </div>
                                     </div>
-                                  </li>
-                                </div>
+                                  </div>
+                                </li>
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ) : (
@@ -1256,7 +1480,11 @@ export default function Themetemplate1(props) {
                   <hr class="spacer1px" />
                   {/* <!--============= Presented By ================--> */}
                   {!mls && !strict && (
-                    <div class="presentedby_main" id="Presented" ref={presentedBy}>
+                    <div
+                      class="presentedby_main"
+                      id="Presented"
+                      ref={presentedBy}
+                    >
                       <div class="presentedby">
                         <div class="presentedby_left">
                           <div class="page_title2">
@@ -1265,12 +1493,11 @@ export default function Themetemplate1(props) {
 
                           <div class="row">
                             <div class="col-sm-4 agent_img">
-                              {Object.keys(agentProfile).length > 0 ? (
+                              {Object.keys(agentProfile).length > 0 && tourData.useAgentPic == 1 ? (
                                 <img
                                   src={agentProfile.agent_profile.profile_img}
                                   alt=""
                                   title=""
-                                  style={{ width: "100%" }}
                                 />
                               ) : (
                                 <Skeleton
@@ -1331,6 +1558,17 @@ export default function Themetemplate1(props) {
                                   style={{ background: "#bbbbbb" }}
                                 />
                               )}
+                              {tourData.announcements && Object.keys(tourData.announcements).length > 0 && <div className="ttwo pull-left">
+                                <i class="fas fa-volume-up"></i>
+                                <a
+                                  href="javascript:void(0);"
+                                  onClick={() =>
+                                    setOpenHouseModal(!openHouseModal)
+                                  }
+                                >
+                                  Open House Announcement
+                                </a>
+                              </div>}
                               <hr class=" spacer20px" />
                             </div>
                           </div>
@@ -1342,7 +1580,6 @@ export default function Themetemplate1(props) {
                                     src={coAgentData.profile_img}
                                     alt=""
                                     title=""
-                                    style={{ width: "100%" }}
                                   />
                                 ) : (
                                   <Skeleton
@@ -1430,100 +1667,109 @@ export default function Themetemplate1(props) {
                           </div>
                         </div>
 
-                        <div
-                          class="presentedby_right"
-                          style={{
-                            backgroundImage: "url(" + banner1 + ")",
-                            backgroundPosition: "fixed",
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "cover",
-                          }}
-                        >
-                          <div class="presentedby_right2">
-                            <h3>
-                              Send Me Details and Market Information for this
-                              Home
-                            </h3>
-                            <hr class="spacer20px" />
-                            <hr class="spacer10px" />
+                        {tourData.showleadcapture == 1 && (
+                          <div
+                            class="presentedby_right"
+                            style={{
+                              backgroundImage: "url(" + banner1 + ")",
+                              backgroundPosition: "fixed",
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "cover",
+                            }}
+                          >
+                            <div class="presentedby_right2">
+                              <h3>
+                                Send Me Details and Market Information for this
+                                Home
+                              </h3>
+                              <hr class="spacer20px" />
+                              <hr class="spacer10px" />
 
-                            <div class="row">
-                              <div class="col-sm-8 presentedby_right_form">
-                                <form
-                                  onSubmit={(event) => {
-                                    event.preventDefault();
-                                    sendMailAgent();
-                                  }}
-                                >
-                                  <ul>
-                                    <li>
-                                      <input
-                                        type="text"
-                                        placeholder="First Name *"
-                                        name="first_name"
-                                        value={sendMail.first_name}
-                                        class="presentedby_right_inputbox"
-                                        onChange={handleInputMailChange}
-                                      />
-                                    </li>
-                                    <li>
-                                      <input
-                                        type="text"
-                                        placeholder="Last Name *"
-                                        name="last_name"
-                                        value={sendMail.last_name}
-                                        class="presentedby_right_inputbox"
-                                        onChange={handleInputMailChange}
-                                      />
-                                    </li>
-                                    <li>
-                                      <input
-                                        type="text"
-                                        placeholder="Email *"
-                                        name="contact_email"
-                                        value={sendMail.contact_email}
-                                        class="presentedby_right_inputbox"
-                                        onChange={handleInputMailChange}
-                                      />
-                                    </li>
-                                    <li>
-                                      <input
-                                        type="tel"
-                                        placeholder="Phone"
-                                        name="phone"
-                                        value={sendMail.phone}
-                                        class="presentedby_right_inputbox"
-                                        onChange={handleInputMailChange}
-                                      />{" "}
-                                    </li>
-                                    <li>
-                                      <textarea
-                                        cols=""
-                                        rows=""
-                                        placeholder="Comments"
-                                        name="comments"
-                                        value={sendMail.comments}
-                                        class="presentedby_right_inputbox"
-                                        onChange={handleInputMailChange}
-                                      ></textarea>
-                                    </li>
-                                    <li>
-                                      <input
-                                        name=""
-                                        type="submit"
-                                        value="Send"
-                                        class="sendbtn"
-                                      />
-                                    </li>
-                                  </ul>
-                                </form>
-                              </div>
-                              <div class="col-sm-4 presentedby_right_img">
-                                <img src={vtcLogo} alt="" />
+                              <div class="row">
+                                <div class="col-sm-8 presentedby_right_form">
+                                  <form
+                                    onSubmit={(event) => {
+                                      event.preventDefault();
+                                      sendMailAgent();
+                                    }}
+                                  >
+                                    <ul>
+                                      <li>
+                                        <input
+                                          type="text"
+                                          placeholder="First Name *"
+                                          name="first_name"
+                                          value={sendMail.first_name}
+                                          class="presentedby_right_inputbox"
+                                          onChange={handleInputMailChange}
+                                        />
+                                      </li>
+                                      <li>
+                                        <input
+                                          type="text"
+                                          placeholder="Last Name *"
+                                          name="last_name"
+                                          value={sendMail.last_name}
+                                          class="presentedby_right_inputbox"
+                                          onChange={handleInputMailChange}
+                                        />
+                                      </li>
+                                      <li>
+                                        <input
+                                          type="text"
+                                          placeholder="Email *"
+                                          name="contact_email"
+                                          value={sendMail.contact_email}
+                                          class="presentedby_right_inputbox"
+                                          onChange={handleInputMailChange}
+                                        />
+                                      </li>
+                                      <li>
+                                        <input
+                                          type="tel"
+                                          placeholder="Phone"
+                                          name="phone"
+                                          value={sendMail.phone}
+                                          class="presentedby_right_inputbox"
+                                          onChange={handleInputMailChange}
+                                        />{" "}
+                                      </li>
+                                      <li>
+                                        <textarea
+                                          cols=""
+                                          rows=""
+                                          placeholder="Comments"
+                                          name="comments"
+                                          value={sendMail.comments}
+                                          class="presentedby_right_inputbox"
+                                          onChange={handleInputMailChange}
+                                        ></textarea>
+                                      </li>
+                                      <li>
+                                        <input
+                                          name=""
+                                          type="submit"
+                                          value="Send"
+                                          class="sendbtn"
+                                        />
+                                      </li>
+                                    </ul>
+                                  </form>
+                                </div>
+                                <div class="col-sm-4 presentedby_right_img">
+                                  {tourData.useCompanyPic == 1 && (
+                                    <img
+                                      src={
+                                        agentProfile.company_details.companylogo
+                                      }
+                                      alt=""
+                                    />
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1572,7 +1818,7 @@ export default function Themetemplate1(props) {
         open={openPanoromaModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Panoroma Modal
+          Additional Panoroma Model
           <CancelIcon
             onClick={() => setOpenPanoromaModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2239,7 +2485,7 @@ export default function Themetemplate1(props) {
         open={openVideoModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Video Modal
+          Additional Video Model
           <CancelIcon
             onClick={() => setOpenVideoModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2256,10 +2502,12 @@ export default function Themetemplate1(props) {
             }}
           >
             <video
-              src={videoUrl}
-              width="100%"
               style={{ height: "460px" }}
+              src={videoUrl.videurl}
+              width="100%"
               autoPlay
+              muted={videoUrl.video_music_type == 1 ? false : true}
+              controls={videoUrl.video_music_type == 1 ? true : false}
             />
           </div>
         </DialogContent>
@@ -2286,134 +2534,98 @@ export default function Themetemplate1(props) {
               }}
             >
               <div class="agent_pop_main">
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Appliances</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.appliances.length > 0 ? (
-                        amenities.appliances.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                {Object.keys(amenities).length > 0 &&
+                  amenities.appliances.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Appliances</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.appliances.length > 0 &&
+                            amenities.appliances.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Community</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.community.length > 0 ? (
-                        amenities.community.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.community.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Community</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.community.length > 0 &&
+                            amenities.community.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Exterior</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.exterior.length > 0 ? (
-                        amenities.exterior.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.exterior.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Exterior</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.exterior.length > 0 &&
+                            amenities.exterior.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Interior</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.interior.length > 0 ? (
-                        amenities.interior.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.interior.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Interior</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.interior.length > 0 &&
+                            amenities.interior.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )}
               </div>
             </form>
           </div>
@@ -2658,13 +2870,41 @@ export default function Themetemplate1(props) {
       <Dialog
         maxWidth={maxWidth}
         fullWidth={true}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={openHouseModal}
+      >
+        <DialogTitle id="customized-dialog-title">
+          Open House Announcements
+          <CancelIcon
+            onClick={() => setOpenHouseModal(false)}
+            style={{ float: "right", cursor: "pointer" }}
+          />
+        </DialogTitle>
+        <DialogContent dividers>
+          <div class="popup-inner">
+            <div class="box-wrap">
+              <h4>Open House Announcement</h4>
+              <div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12">
+                <p>{`${tourData?.announcements?.announcedate},${tourData?.announcements?.fromtime},${tourData?.announcements?.fromampm},${tourData?.announcements?.totime},${tourData?.announcements?.toampm}`}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        maxWidth={maxWidth}
+        fullWidth={true}
         Transition
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={openImageModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Image Modal
+          Additional Image Model
           <CancelIcon
             onClick={() => setOpenImageModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2710,3 +2950,35 @@ export default function Themetemplate1(props) {
     </>
   );
 }
+// =======================responsive navbar===============================
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    // only execute all the code below in client side
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
+// ===================--------------------end-----------==============

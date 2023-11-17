@@ -54,6 +54,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRef } from "react";
+import zoomIcon from "../images/zoomicon.png";
 const APIGetUserData = APIURL() + "user-details";
 const APIGetTourDetails = APIURL() + "tour-details";
 const APIGetTourInfo = APIURL() + "get-Tourinfo";
@@ -103,7 +104,7 @@ const options = {
     },
   },
 };
-const options2 = {
+const options3 = {
   lazyLoad: true,
   loop: true,
   margin: 20,
@@ -111,25 +112,28 @@ const options2 = {
   animateOut: "fadeOut",
   animateIn: "fadeIn",
   autoplay: true,
-  autoplayTimeout: 3500,
+  autoplayTimeout: 20000,
   autoplayHoverPause: false,
-  autoHeight: true,
   mouseDrag: true,
   touchDrag: true,
-  smartSpeed: 2500,
-  nav: false,
-  dots: true,
+  smartSpeed: 10000,
+  nav: true,
+  dots: false,
+  navText: [
+    "<i class='far fa-chevron-left sp'></i>",
+    "<i class='far fa-chevron-right sp'></i>",
+  ],
   responsive: {
     0: {
       items: 1,
     },
 
     600: {
-      items: 2,
+      items: 1,
     },
 
     1024: {
-      items: 3,
+      items: 1,
     },
 
     1366: {
@@ -139,6 +143,8 @@ const options2 = {
 };
 export default function Themetemplate2(props) {
   const AgnetID = props.AgentId;
+  const documents = props.documents;
+  const threeDs = props.threeDs;
   const ThemeId = props.ThemeId;
   const tourid = props.tourid;
   const agentProfile = props.agentProfile;
@@ -152,6 +158,45 @@ export default function Themetemplate2(props) {
   const coAgentData = props.coAgentData;
   const mls = props.mls;
   const strict = props.strict;
+  useEffect(() => {
+    const objusr = {
+      authenticate_key: "abcd123XYZ",
+      agent_id: AgnetID,
+    };
+    postRecord(APIGetUserData, objusr).then((res) => {
+      // console.log(res);
+      if (res.data[0].response.status === "success") {
+        setCurrentUser(res.data[0].response.data.agent_profile);
+      }
+    });
+  }, [AgnetID]);
+  useEffect(() => {
+    const objusr = {
+      authenticate_key: "abcd123XYZ",
+      agentId: AgnetID,
+      tourid: tourid,
+    };
+    postRecord(APIGetTourInfo, objusr).then((res) => {
+      if (res.data[0].response.status === "success") {
+        setImageData(res.data[0].response.dataDetails.dataProvider);
+        setVideoData(res.data[0].response.dataDetails.dataProvider2);
+        setTourDetailsData(res.data[0].response.dataDetails.tourdetails);
+        setPanromaData(res.data[0].response.dataDetails.dataProvider3);
+        setFloorPlandata(res.data[0].response.dataDetails.dataProvider4);
+      }
+    });
+  }, [AgnetID, ThemeId]);
+  useEffect(() => {
+    const obj = { authenticate_key: "abcd123XYZ" };
+    postRecord(APIGetSocialIconLink, obj).then((res) => {
+      if (res.data[0].response.status === "success") {
+        console.log(res.data[0].response.data[0].link);
+        setFacebookLink(res.data[0].response.data[2].link);
+        setTwitterLink(res.data[0].response.data[0].link);
+        setYoutubeLink(res.data[0].response.data[1].link);
+      }
+    });
+  }, []);
 
   // const AgnetID = props.match.params.id;
   // const ThemeId = props.match.params.themeid;
@@ -194,6 +239,7 @@ export default function Themetemplate2(props) {
   const [openAgentinfo, setopenAgentInfo] = useState(false);
   const [imageData, setImageData] = useState([]);
   const [videoData, setVideoData] = useState([]);
+  const [openHouseModal, setOpenHouseModal] = useState(false);
   const [largeWidth, setLargeWidth] = React.useState("lg");
   const [openVideoModal, setOpenVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
@@ -218,6 +264,9 @@ export default function Themetemplate2(props) {
 
   const features = useRef(null);
   const photos = useRef(null);
+  const floorPlans = useRef(null);
+  const videos = useRef(null);
+  const panaroma = useRef(null);
   const location = useRef(null);
   const presentedBy = useRef(null);
   const contact = useRef(null);
@@ -259,11 +308,11 @@ export default function Themetemplate2(props) {
       },
 
       600: {
-        items: 2,
+        items: 1,
       },
 
       1024: {
-        items: 3,
+        items: 1,
       },
 
       1366: {
@@ -299,18 +348,7 @@ export default function Themetemplate2(props) {
     height: "400px",
     background: "#000000",
   };
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agent_id: AgnetID,
-    };
-    postRecord(APIGetUserData, objusr).then((res) => {
-      // console.log(res);
-      if (res.data[0].response.status === "success") {
-        setCurrentUser(res.data[0].response.data.agent_profile);
-      }
-    });
-  }, [AgnetID]);
+
   // useEffect(() => {
   //   const objusr = {
   //     authenticate_key: "abcd123XYZ",
@@ -331,33 +369,6 @@ export default function Themetemplate2(props) {
   //     }
   //   });
   // }, [AgnetID, ThemeId]);
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgnetID,
-      tourid: tourid,
-    };
-    postRecord(APIGetTourInfo, objusr).then((res) => {
-      if (res.data[0].response.status === "success") {
-        setImageData(res.data[0].response.dataDetails.dataProvider);
-        setVideoData(res.data[0].response.dataDetails.dataProvider2);
-        setTourDetailsData(res.data[0].response.dataDetails.tourdetails);
-        setPanromaData(res.data[0].response.dataDetails.dataProvider3);
-        setFloorPlandata(res.data[0].response.dataDetails.dataProvider4);
-      }
-    });
-  }, [AgnetID, ThemeId]);
-  useEffect(() => {
-    const obj = { authenticate_key: "abcd123XYZ" };
-    postRecord(APIGetSocialIconLink, obj).then((res) => {
-      if (res.data[0].response.status === "success") {
-        console.log(res.data[0].response.data[0].link);
-        setFacebookLink(res.data[0].response.data[2].link);
-        setTwitterLink(res.data[0].response.data[0].link);
-        setYoutubeLink(res.data[0].response.data[1].link);
-      }
-    });
-  }, []);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -501,7 +512,33 @@ export default function Themetemplate2(props) {
   const handleWebsite = () => {
     window.open("http://" + agentProfile.company_details.website, "_blank");
   };
-  console.log(tourData);
+  const downloadDoc = (fileLink, name) => {
+    const link = document.createElement("a");
+    link.href = fileLink;
+    link.setAttribute("download", name);
+    document.body.appendChild(link);
+    link.click();
+  };
+  // =============responsive navbar=======================================
+  const size = useWindowSize();
+  const [mobileClass, setMobileClass] = useState("small-screen");
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (size.width <= 768) {
+      console.log("Adding mobileClass");
+      setMobileClass("small-screen");
+      setShow(false);
+    } else {
+      console.log("removing mobileClass");
+      setMobileClass("");
+      setShow(true);
+    }
+  }, [size]);
+  useEffect(() => {
+    setShow(false);
+  }, []);
+  // ====================-----------------------------======================
   return (
     <>
       <div class="wrapper theme3" id="home">
@@ -516,24 +553,75 @@ export default function Themetemplate2(props) {
                       {tourData.zipcode}
                     </div>
                     <div class="topmenu">
-                      <nav id="cssmenu" class="head_btm_menu">
-                        <ul>
+                      <nav
+                        id="cssmenu"
+                        className={`head_btm_menu ${mobileClass}`}
+                      >
+                        <div
+                          id="menu-button"
+                          onClick={() => setShow(!show)}
+                        ></div>
+                        <ul style={{ display: show ? "block" : "" }}>
                           <li>
                             <a href="#home">Home</a>
                           </li>
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,features)}>Features</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, features)}
+                            >
+                              Features
+                            </a>
                           </li>
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, photos)}
+                            >
+                              Photos
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, panaroma)}
+                            >
+                              Panaroma
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, videos)}
+                            >
+                              Videos
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, floorPlans)}
+                            >
+                              Floor Plans
+                            </a>
                           </li>
                           {!strict && (
                             <li>
-                              <a href="#" onClick={(e)=>scrollToElement(e,location)}>Location</a>
+                              <a
+                                href="#"
+                                onClick={(e) => scrollToElement(e, location)}
+                              >
+                                Location
+                              </a>
                             </li>
                           )}
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, presentedBy)}
+                            >
+                              Presented By
+                            </a>
                           </li>
                           <li>
                             <a href="#">Details</a>
@@ -566,7 +654,12 @@ export default function Themetemplate2(props) {
                           {!mls && !strict && (
                             <>
                               <li>
-                                <a href="#" onClick={(e)=>scrollToElement(e,contact)}>Contact</a>
+                                <a
+                                  href="#"
+                                  onClick={(e) => scrollToElement(e, contact)}
+                                >
+                                  Contact
+                                </a>
                                 <ul>
                                   <li>
                                     <a
@@ -689,8 +782,8 @@ export default function Themetemplate2(props) {
             <img src={banner_c} alt="" />
           </div>
         </div>
-                    
-        <div class="content" id="features" ref={features} >
+
+        <div class="content" id="features" ref={features}>
           <div class="content_inner">
             <div class="full_width">
               <div class="full_width_inner">
@@ -1008,6 +1101,63 @@ export default function Themetemplate2(props) {
                   </div>
                 )}
                 <hr class="spacer1px" />
+                {documents && documents.length > 0 ? (
+                  <div class="videogallery">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title">
+                            <h3>Documents</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          {documents &&
+                            documents.length > 0 &&
+                            documents.map((res) => (
+                              <div class="col-md-4 col-sm-6 col-xs-12 m-auto">
+                                <div class="callbacks_container">
+                                  <li>
+                                    <div class="gallerybox">
+                                      <div class="image-holder video-holder">
+                                        <img
+                                          src="https://virtualtourcafe.com/images/documents.png?1590647111"
+                                          style={{
+                                            marginTop: "-0",
+                                            height: "100%",
+                                            objectFit: "contain",
+                                          }}
+                                        />
+                                        <span class="gallery_title">Doc</span>
+                                        <div class="overlay">
+                                          <div class="button">
+                                            <a
+                                              onClick={() =>
+                                                downloadDoc(
+                                                  res.doc_link,
+                                                  res.doc_name
+                                                )
+                                              }
+                                              data-title={res.doc_name}
+                                            >
+                                              <img src={zoomIcon} alt="" />
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
                 {/* <!--============= Photo Gallery ================--> */}
                 {imageData.length > 0 ? (
                   <div
@@ -1070,6 +1220,7 @@ export default function Themetemplate2(props) {
                 ) : (
                   ""
                 )}
+
                 <hr class="spacer1px" />
                 {/* <!--============= 3D Video ================--> */}
                 {/* <div class="video_3d">
@@ -1083,11 +1234,21 @@ export default function Themetemplate2(props) {
                                     </div>
                                 </div> */}
                 {videoData.length > 0 ? (
-                  <div class="videogallery">
+                  <div
+                    class="photogallery videos"
+                    id="videos"
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                    ref={videos}
+                  >
                     <div class="container">
                       <div class="row">
                         <div class="col-sm-12">
-                          <div class="page_title">
+                          <div class="page_title2">
                             <h3>Video Gallery</h3>
                           </div>
                         </div>
@@ -1096,25 +1257,15 @@ export default function Themetemplate2(props) {
                         <div class="col-lg-12">
                           {videoData.map((res) => (
                             <div class="col-md-6 m-auto">
-                              <div class="callbacks_container">
+                              <div class="callbacks_container mb-3">
                                 <li>
                                   <div class="gallerybox">
-                                    <div class="image-holder">
-                                      <img
-                                        src={videobg}
-                                        alt="Services"
-                                        class="image"
-                                      />
+                                    <div class="image-holder video-holder">
+                                      <img src={res.thumbnail} alt="" />
                                       <span class="gallery_title">Video</span>
                                       <div class="overlay">
                                         <div class="button">
-                                          <p>Title Goes Here</p>
-                                          <a
-                                            onClick={() =>
-                                              setVideoModal(res.videurl)
-                                            }
-                                            data-title="Title Goes Here"
-                                          >
+                                          <a onClick={() => setVideoModal(res)}>
                                             <img src={playicon} alt="" />
                                           </a>
                                         </div>
@@ -1132,48 +1283,114 @@ export default function Themetemplate2(props) {
                 ) : (
                   ""
                 )}
+                {floorPlanData.length > 0 ? (
+                  <div class="floorPlans mb-5">
+                    <div class="container" ref={floorPlans}>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2 mt-5">
+                            <h3>Floor Plan</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row carousel">
+                        <div class="col-md-offset-2 col-md-8 box-plan">
+                          <OwlCarousel
+                            margin={10}
+                            {...options3}
+                            class="gallery-design1 owl-carousel"
+                          >
+                            {floorPlanData.map((res) => (
+                              <div
+                                class="gallerybox"
+                                onClick={() => ImageModal(res.imageurl)}
+                              >
+                                <div class="image-holder">
+                                  <div class="gallery_bgimage">
+                                    <img src={res.imageurl} alt="image01" />
+                                  </div>
+                                  <div class="overlay">
+                                    <div class="button">
+                                      <p>{res.caption}</p>
+                                      <a
+                                        onClick={() => ImageModal(res.imageurl)}
+                                      >
+                                        <img
+                                          src={zoom2}
+                                          alt=""
+                                          style={{ width: "40px" }}
+                                        />
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </OwlCarousel>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 <hr class="spacer1px" />
                 {/* <!--============= Floor Plans Gallery ================--> */}
                 {panoromaData.length > 0 ? (
-                  <div class="floorplans">
+                  <div
+                    class="photogallery"
+                    id="photos"
+                    ref={panaroma}
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                  >
                     <div class="container">
                       <div class="row">
                         <div class="col-sm-12">
-                          <div class="page_title">
+                          <div class="page_title2">
                             <h3>Panorama Gallery</h3>
                           </div>
                         </div>
                       </div>
-                      <div class="row">
-                        {panoromaData.map((res) => (
-                          <div class="col-md-6 m-auto">
-                            <div class="callbacks_container">
-                              <li
-                                data-src={res.panurl}
-                                data-sub-html="<p>trafficreport</p>"
+                      <div class="row panoContent">
+                        <div class="col-lg-12">
+                          <OwlCarousel
+                            margin={10}
+                            {...options}
+                            loop={false}
+                            class="gallery-design1 owl-carousel"
+                          >
+                            {panoromaData.map((res) => (
+                              <div
+                                class="gallerybox"
+                                onClick={() => ImageModal(res.panurl)}
                               >
-                                <div class="gallerybox">
-                                  <div class="image-holder">
-                                    <a href={res.panurl}>
-                                      <img alt="img1" src={res.panurl} />
-                                    </a>
-                                    <div class="overlay">
-                                      <div
-                                        class="button"
-                                        onClick={() => setPanoModal(res.panurl)}
-                                      >
-                                        <p>Title Goes Here</p>
-                                        <a href="#">
-                                          <img src={zoom} alt="" />
-                                        </a>
-                                      </div>
+                                <div class="image-holder">
+                                  <div class="gallery_bgimage">
+                                    <img src={res.panurl} alt="image01" />
+                                  </div>
+                                  <div class="overlay">
+                                    <div class="button">
+                                      <p>{res.caption}</p>
+                                      <a onClick={() => ImageModal(res.panurl)}>
+                                        <img
+                                          src={zoom2}
+                                          alt=""
+                                          style={{ width: "40px" }}
+                                        />
+                                      </a>
                                     </div>
                                   </div>
                                 </div>
-                              </li>
-                            </div>
-                          </div>
-                        ))}
+                              </div>
+                            ))}
+                          </OwlCarousel>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1228,7 +1445,11 @@ export default function Themetemplate2(props) {
                 {/* <!--============= Presented By ================--> */}
 
                 {!strict && !mls && (
-                  <div class="presentedby_main" id="Presented" ref={presentedBy}>
+                  <div
+                    class="presentedby_main"
+                    id="Presented"
+                    ref={presentedBy}
+                  >
                     <div class="presentedby">
                       <div class="presentedby_left">
                         <div class="page_title2">
@@ -1237,12 +1458,11 @@ export default function Themetemplate2(props) {
 
                         <div class="row">
                           <div class="col-sm-4 agent_img">
-                            {Object.keys(agentProfile).length > 0 ? (
+                            {Object.keys(agentProfile).length > 0 && tourData.useAgentPic == 1 ? (
                               <img
                                 src={agentProfile.agent_profile.profile_img}
                                 alt=""
                                 title=""
-                                style={{ width: "100%" }}
                               />
                             ) : (
                               <Skeleton
@@ -1303,6 +1523,17 @@ export default function Themetemplate2(props) {
                                 style={{ background: "#bbbbbb" }}
                               />
                             )}
+                            {tourData.announcements && Object.keys(tourData.announcements).length > 0 && <div className="tthree pull-left">
+                              <i class="fas fa-volume-up"></i>
+                              <a
+                                href="javascript:void(0);"
+                                onClick={() =>
+                                  setOpenHouseModal(!openHouseModal)
+                                }
+                              >
+                                Open House Announcement
+                              </a>
+                            </div>}
                             <hr class=" spacer20px" />
                           </div>
                         </div>
@@ -1314,7 +1545,6 @@ export default function Themetemplate2(props) {
                                   src={coAgentData.profile_img}
                                   alt=""
                                   title=""
-                                  style={{ width: "100%" }}
                                 />
                               ) : (
                                 <Skeleton
@@ -1375,6 +1605,7 @@ export default function Themetemplate2(props) {
                                   style={{ background: "#bbbbbb" }}
                                 />
                               )}
+
                               <hr class=" spacer20px" />
                             </div>
                           </div>
@@ -1402,24 +1633,35 @@ export default function Themetemplate2(props) {
                         </div>
                       </div>
 
-                      <div
-                        class="presentedby_right"
-                        style={{
-                          backgroundImage: "url(" + allpages + ")",
-                          backgroundPosition: "fixed",
-                          backgroundRepeat: "no-repeat",
-                          backgroundSize: "cover",
-                        }}
-                      >
-                        &nbsp;
-                      </div>
+                      {threeDs?.code1 || threeDs?.code2 ? (
+                        <div
+                          class="presentedby_right"
+                          dangerouslySetInnerHTML={{
+                            __html: threeDs?.code1
+                              ? threeDs?.code1
+                              : threeDs?.code2,
+                          }}
+                        ></div>
+                      ) : (
+                        <div class="property_details_right">
+                          <img
+                            src={imageData[0]?.imageurl}
+                            alt="first pict"
+                            style={{
+                              objectFit: "cover",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
 
                 <hr class="spacer1px" />
-                {!strict && !mls && (
-                  <div class="sendme_details" ref={contact}>
+                {!strict && !mls && tourData.showleadcapture == 1 && (
+                  <div class="sendme_details bg-white" ref={contact}>
                     <div class="container">
                       <div class="row">
                         <div class="col-sm-12">
@@ -1502,7 +1744,12 @@ export default function Themetemplate2(props) {
                               </form>
                             </div>
                             <div class="col-sm-4 presentedby_right_img">
-                              <img src={vtcLogo} alt="" />
+                              {tourData.useCompanyPic == 1 && (
+                                <img
+                                  src={agentProfile.company_details.companylogo}
+                                  alt=""
+                                />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1516,7 +1763,6 @@ export default function Themetemplate2(props) {
                     backgroundImage: "url(" + footerbg + ")",
                     backgroundPosition: "fixed",
                     backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
                     position: "relative",
                     padding: "250px 0px 10px 0px",
                   }}
@@ -1559,7 +1805,7 @@ export default function Themetemplate2(props) {
         open={openPanoromaModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Panoroma Modal
+          Additional Panoroma Model
           <CancelIcon
             onClick={() => setOpenPanoromaModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2240,134 +2486,98 @@ export default function Themetemplate2(props) {
               }}
             >
               <div class="agent_pop_main">
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Appliances</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.appliances.length > 0 ? (
-                        amenities.appliances.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                {Object.keys(amenities).length > 0 &&
+                  amenities.appliances.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Appliances</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.appliances.length > 0 &&
+                            amenities.appliances.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Community</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.community.length > 0 ? (
-                        amenities.community.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.community.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Community</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.community.length > 0 &&
+                            amenities.community.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Exterior</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.exterior.length > 0 ? (
-                        amenities.exterior.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.exterior.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Exterior</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.exterior.length > 0 &&
+                            amenities.exterior.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="browse_img_head">
-                    <h5>Interior</h5>
-                  </div>
-                  <div class="menu_opt_sec">
-                    <div class="mar_top row">
-                      {Object.keys(amenities).length > 0 &&
-                      amenities.interior.length > 0 ? (
-                        amenities.interior.map((res) => (
-                          <div class="col-lg-4 col-md-4">
-                            <div class="app_preview">
-                              <p style={{ marginLeft: "10px" }}>
-                                {res.amenityname}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
+                  )}
+                {Object.keys(amenities).length > 0 &&
+                  amenities.interior.length > 0 && (
+                    <div class="">
+                      <div class="browse_img_head">
+                        <h5>Interior</h5>
+                      </div>
+                      <div class="menu_opt_sec">
+                        <div class="mar_top row">
+                          {Object.keys(amenities).length > 0 &&
+                            amenities.interior.length > 0 &&
+                            amenities.interior.map((res) => (
+                              <div class="col-lg-4 col-md-4">
+                                <div class="app_preview">
+                                  <p style={{ marginLeft: "10px" }}>
+                                    {res.amenityname}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )}
               </div>
             </form>
           </div>
@@ -2542,7 +2752,7 @@ export default function Themetemplate2(props) {
         open={openVideoModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Video Modal
+          Additional Video Model
           <CancelIcon
             onClick={() => setOpenVideoModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2558,7 +2768,13 @@ export default function Themetemplate2(props) {
               alignItems: "center",
             }}
           >
-            <video src={videoUrl} width="100%" autoPlay />
+            <video
+              src={videoUrl.videurl}
+              width="100%"
+              autoPlay
+              muted={videoUrl.video_music_type == 1 ? false : true}
+              controls={videoUrl.video_music_type == 1 ? true : false}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -2619,6 +2835,34 @@ export default function Themetemplate2(props) {
           </div>
         </DialogContent>
       </Dialog>
+      <Dialog
+        maxWidth={maxWidth}
+        fullWidth={true}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={openHouseModal}
+      >
+        <DialogTitle id="customized-dialog-title">
+          Open House Announcements
+          <CancelIcon
+            onClick={() => setOpenHouseModal(false)}
+            style={{ float: "right", cursor: "pointer" }}
+          />
+        </DialogTitle>
+        <DialogContent dividers>
+          <div class="popup-inner">
+            <div class="box-wrap">
+              <h4>Open House Announcement</h4>
+              <div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12">
+                <p>{`${tourData?.announcements?.announcedate},${tourData?.announcements?.fromtime},${tourData?.announcements?.fromampm},${tourData?.announcements?.totime},${tourData?.announcements?.toampm}`}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         maxWidth={largeWidth}
@@ -2629,7 +2873,7 @@ export default function Themetemplate2(props) {
         open={openImageModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional image Modal
+          Additional image Model
           <CancelIcon
             onClick={() => setOpenImageModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2675,3 +2919,36 @@ export default function Themetemplate2(props) {
     </>
   );
 }
+
+// =======================responsive navbar===============================
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    // only execute all the code below in client side
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
+// ===================--------------------end-----------==============

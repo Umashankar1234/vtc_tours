@@ -15,6 +15,8 @@ function UniversalTourTheme(props) {
   const mls = props.mls;
   const strict = props.strict;
   const [allImages, setAllImages] = useState({});
+  const [threeDs, setThreeDs] = useState({});
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [themeId, setThemeId] = useState("");
   const [is_premium_theme, setIs_premium_theme] = useState(null);
@@ -49,7 +51,8 @@ function UniversalTourTheme(props) {
         setThemeId(res.data[0].response.tourdetails.themeid);
         setAgentId(res.data[0].response.tourdetails.userid);
         setAllImages(res.data[0].response.dataProvider);
-
+        setDocuments(res.data[0].response.document);
+        setThreeDs(res.data[0].response.threeD)
         setLoading(false);
       }
     });
@@ -60,7 +63,7 @@ function UniversalTourTheme(props) {
         return (
           <Themetemplate
             themeId={tourData.premium_tour_theme}
-            agentId={agentId}
+            AgentId={agentId}
             agentProfile={agentProfile}
             amenities={amenities}
             music={music}
@@ -73,13 +76,15 @@ function UniversalTourTheme(props) {
             tourid={tourid}
             mls={mls}
             strict={strict}
+            threeDs={threeDs}
+            documents={documents}
           />
         );
       } else if (tourData.premium_tour_theme == 2) {
         return (
           <Themetemplate1
             themeId={tourData.premium_tour_theme}
-            agentId={agentId}
+            AgentId={agentId}
             agentProfile={agentProfile}
             amenities={amenities}
             music={music}
@@ -92,13 +97,16 @@ function UniversalTourTheme(props) {
             tourid={tourid}
             mls={mls}
             strict={strict}
+            documents={documents}
+            threeDs={threeDs}
+
           />
         );
       } else if (tourData.premium_tour_theme == 3) {
         return (
           <Themetemplate2
             themeId={tourData.premium_tour_theme}
-            agentId={agentId}
+            AgentId={agentId}
             agentProfile={agentProfile}
             amenities={amenities}
             music={music}
@@ -111,13 +119,17 @@ function UniversalTourTheme(props) {
             tourid={tourid}
             mls={mls}
             strict={strict}
+            documents={documents}
+            threeDs={threeDs}
+
+
           />
         );
       } else if (tourData.premium_tour_theme == 4) {
         return (
           <ThemeTemplate3
             themeId={tourData.premium_tour_theme}
-            agentId={agentId}
+            AgentId={agentId}
             agentProfile={agentProfile}
             amenities={amenities}
             music={music}
@@ -130,6 +142,8 @@ function UniversalTourTheme(props) {
             tourid={tourid}
             mls={mls}
             strict={strict}
+            threeDs={threeDs}
+            documents={documents}
           />
         );
       } else {
@@ -149,6 +163,10 @@ function UniversalTourTheme(props) {
             tourid={tourid}
             mls={mls}
             strict={strict}
+            documents={documents}
+            threeDs={threeDs}
+
+
           />
         );
       }
@@ -171,6 +189,10 @@ function UniversalTourTheme(props) {
           mls={mls}
           strict={strict}
           allImages={allImages}
+          documents={documents}
+          threeDs={threeDs}
+
+
         />
       );
     }

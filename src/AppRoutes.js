@@ -26,8 +26,7 @@ export default function AppRoutes() {
           path={StrictPath() + ":tourid?"}
           render={(props) => <UniversalTourTheme {...props} strict={true} />}
         />
-        <Route path={APIPath() + ":tourid?"} component={UniversalTourTheme} />
-        <Route
+        {/* <Route
           path={APIPath() + "theme-template/:themeid?/:id?"}
           exact
           component={Themetemplate}
@@ -51,7 +50,7 @@ export default function AppRoutes() {
           path={APIPath() + "theme-template4/:themeid?/:id?"}
           exact
           component={ThemeTemplate4}
-        />
+        /> */}
         <Route
           path={APIPath() + "agent-view-flyer-active/:themeid?/:id?"}
           exact
@@ -61,10 +60,12 @@ export default function AppRoutes() {
           path={APIPath() + "agent-my-listing/:listingId?/:tourid?"}
           component={AgentMylisting}
         />
-        <Route
+        {/* <Route
           path={APIPath() + "theme-template5/:tourid?/:agentid?"}
           component={ThemeTemplate5}
-        />
+        /> */}
+        <Route path={APIPath() + ":tourid?"} component={UniversalTourTheme} />
+
         <Route path={APIPath()} exact component={LandingPage} />
       </Switch>
     </Router>

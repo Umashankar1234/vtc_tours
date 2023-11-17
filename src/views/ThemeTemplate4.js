@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { APIURL, APIPath, HomePageUrl } from "../CommonMethods/Fetch";
 import {
   FacebookShareButton,
-  LinkedinShareButton, 
+  LinkedinShareButton,
   WhatsappShareButton,
   TwitterShareButton,
 } from "react-share";
@@ -21,6 +21,7 @@ import banner2 from "../images/banner2.jpg";
 import banner3 from "../images/banner3.jpg";
 import about1 from "../images/about1.jpg";
 import bg2 from "../images/bg2.jpg";
+import zoomIcon from "../images/zoomicon.png";
 import aboutbg from "../images/aboutbg.jpg";
 import zoom2 from "../images/zoom2.png";
 import realpics3 from "../images/realpics3.jpg";
@@ -91,7 +92,44 @@ const options = {
     },
 
     600: {
-      items: 2,
+      items: 1,
+    },
+
+    1024: {
+      items: 1,
+    },
+
+    1366: {
+      items: 1,
+    },
+  },
+};
+const options3 = {
+  lazyLoad: true,
+  loop: true,
+  margin: 20,
+  responsiveClass: true,
+  animateOut: "fadeOut",
+  animateIn: "fadeIn",
+  autoplay: true,
+  autoplayTimeout: 2000,
+  autoplayHoverPause: false,
+  mouseDrag: true,
+  touchDrag: true,
+  smartSpeed: 1000,
+  nav: true,
+  dots: false,
+  navText: [
+    "<i class='far fa-chevron-left sp'></i>",
+    "<i class='far fa-chevron-right sp'></i>",
+  ],
+  responsive: {
+    0: {
+      items: 1,
+    },
+
+    600: {
+      items: 1,
     },
 
     1024: {
@@ -105,6 +143,8 @@ const options = {
 };
 export default function Themetemplate4(props) {
   const AgnetID = props.agentId;
+  const threeDs = props.threeDs;
+  const documents = props.documents;
   const ThemeId = props.themeid;
   const tourid = props.tourid;
   const mls = props.mls;
@@ -122,7 +162,73 @@ export default function Themetemplate4(props) {
   const slideSetting = props.slideSetting;
   const coAgentData = props.coAgentData;
   // const AgnetID = 7686;
+  const features = useRef(null);
+  const photos = useRef(null);
+  const topVideo = useRef(null);
+  const panorama = useRef(null);
+  const floorPlans = useRef(null);
+  const location = useRef(null);
+  const presentedBy = useRef(null);
+  const contact = useRef(null);
+  const floorPlan = useRef(null);
+  const video = useRef(null);
   // const ThemeId = 4388002;
+  useEffect(() => {
+    const objusr = {
+      authenticate_key: "abcd123XYZ",
+      agent_id: AgnetID,
+    };
+    postRecord(APIGetUserData, objusr).then((res) => {
+      // console.log(res);
+      if (res.data[0].response.status === "success") {
+        setCurrentUser(res.data[0].response.data.agent_profile);
+      }
+    });
+  }, [AgnetID]);
+  useEffect(() => {
+    const objusr = {
+      authenticate_key: "abcd123XYZ",
+      agentId: AgnetID,
+      tourid: tourid,
+    };
+    postRecord(APIGetTourInfo, objusr).then((res) => {
+      if (res.data[0].response.status === "success") {
+        setImageData(res.data[0].response.dataDetails.dataProvider);
+        setVideoData(res.data[0].response.dataDetails.dataProvider2);
+        setTourDetailsData(res.data[0].response.dataDetails.tourdetails);
+        setPanromaData(res.data[0].response.dataDetails.dataProvider3);
+        setFloorPlandata(res.data[0].response.dataDetails.dataProvider4);
+      }
+    });
+  }, [AgnetID, tourid]);
+  useEffect(() => {
+    const obj = { authenticate_key: "abcd123XYZ" };
+    postRecord(APIGetSocialIconLink, obj).then((res) => {
+      if (res.data[0].response.status === "success") {
+        setFacebookLink(res.data[0].response.data[2].link);
+        setTwitterLink(res.data[0].response.data[0].link);
+        setYoutubeLink(res.data[0].response.data[1].link);
+      }
+    });
+  }, []);
+  const size = useWindowSize();
+  const [mobileClass, setMobileClass] = useState("small-screen");
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (size.width <= 768) {
+      console.log("Adding mobileClass");
+      setMobileClass("small-screen");
+      setShow(false);
+    } else {
+      console.log("removing mobileClass");
+      setMobileClass("");
+      setShow(true);
+    }
+  }, [size]);
+  useEffect(() => {
+    setShow(false);
+  }, []);
   const initialMorgageData = {
     length: "",
     rate: "",
@@ -156,12 +262,14 @@ export default function Themetemplate4(props) {
   const [openPropertyInformation, setOpenProertyInfromation] = useState(false);
   const [mortgageData, setMortgageData] = useState({ initialMorgageData });
   const [tourDetailsData, setTourDetailsData] = useState({});
+  const [openHouseModal, setOpenHouseModal] = useState(false);
   const [openAgentinfo, setopenAgentInfo] = useState(false);
   const [imageData, setImageData] = useState([]);
   const [videoData, setVideoData] = useState([]);
   const [largeWidth, setLargeWidth] = React.useState("lg");
   const [openVideoModal, setOpenVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
+  const [muted, setMuted] = useState(true);
   const [openWalkScore, setOpenWalkScore] = useState(false);
   const [openImageModal, setOpenImageModal] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -211,11 +319,11 @@ export default function Themetemplate4(props) {
       },
 
       600: {
-        items: 2,
+        items: 1,
       },
 
       1024: {
-        items: 3,
+        items: 1,
       },
 
       1366: {
@@ -251,18 +359,7 @@ export default function Themetemplate4(props) {
     height: "400px",
     background: "#000000",
   };
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agent_id: AgnetID,
-    };
-    postRecord(APIGetUserData, objusr).then((res) => {
-      // console.log(res);
-      if (res.data[0].response.status === "success") {
-        setCurrentUser(res.data[0].response.data.agent_profile);
-      }
-    });
-  }, [AgnetID]);
+
   // useEffect(() => {
   //   const objusr = {
   //     authenticate_key: "abcd123XYZ",
@@ -283,32 +380,6 @@ export default function Themetemplate4(props) {
   //     }
   //   });
   // }, [AgnetID, ThemeId]);
-  useEffect(() => {
-    const objusr = {
-      authenticate_key: "abcd123XYZ",
-      agentId: AgnetID,
-      tourid: tourid,
-    };
-    postRecord(APIGetTourInfo, objusr).then((res) => {
-      if (res.data[0].response.status === "success") {
-        setImageData(res.data[0].response.dataDetails.dataProvider);
-        setVideoData(res.data[0].response.dataDetails.dataProvider2);
-        setTourDetailsData(res.data[0].response.dataDetails.tourdetails);
-        setPanromaData(res.data[0].response.dataDetails.dataProvider3);
-        setFloorPlandata(res.data[0].response.dataDetails.dataProvider4);
-      }
-    });
-  }, [AgnetID,tourid]);
-  useEffect(() => {
-    const obj = { authenticate_key: "abcd123XYZ" };
-    postRecord(APIGetSocialIconLink, obj).then((res) => {
-      if (res.data[0].response.status === "success") {
-        setFacebookLink(res.data[0].response.data[2].link);
-        setTwitterLink(res.data[0].response.data[0].link);
-        setYoutubeLink(res.data[0].response.data[1].link);
-      }
-    });
-  }, []);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -368,10 +439,7 @@ export default function Themetemplate4(props) {
     CalculateMortgage();
   };
   const viewFlyer = () => {
-    window.open(
-      HomePageUrl() + "site/flyer/" + tourid,
-      "_blank"
-    );
+    window.open(HomePageUrl() + "site/flyer/" + tourid, "_blank");
   };
   const setVideoModal = (video) => {
     setOpenVideoModal(true);
@@ -455,11 +523,6 @@ export default function Themetemplate4(props) {
   const handleWebsite = () => {
     window.open("http://" + agentProfile.company_details.website, "_blank");
   };
-  const features = useRef(null);
-  const photos = useRef(null);
-  const location = useRef(null);
-  const presentedBy = useRef(null);
-  const contact = useRef(null);
 
   const scrollToElement = (e, elementRef) => {
     e.preventDefault();
@@ -467,9 +530,19 @@ export default function Themetemplate4(props) {
       elementRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const downloadDoc = (fileLink, name) => {
+    const link = document.createElement("a");
+    link.href = fileLink;
+    link.setAttribute("download", name);
+    document.body.appendChild(link);
+    link.click();
+  };
+  // =============responsive navbar=======================================
+
+  // ====================-----------------------------======================
   return (
     <>
-      <div class="wrapper theme3" id="home">
+      <div class="wrapper theme3 theme5" id="home">
         <div class="wrapper_inner">
           <div class="header-box1">
             <div class="container">
@@ -478,23 +551,78 @@ export default function Themetemplate4(props) {
                   <div class="header-boxfull">
                     <div class="company-name">{tourDetailsData.Caption}</div>
                     <div class="topmenu">
-                      <nav id="cssmenu" class="head_btm_menu">
-                        <ul>
+                      <nav
+                        id="cssmenu"
+                        className={`head_btm_menu ${mobileClass}`}
+                      >
+                        <div
+                          id="menu-button"
+                          onClick={() => setShow(!show)}
+                        ></div>
+                        <ul style={{ display: show ? "block" : "" }}>
                           <li>
                             <a href="#home">Home</a>
                           </li>
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,features)}>Features</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, features)}
+                            >
+                              Features
+                            </a>
                           </li>
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,photos)}>Photos</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, photos)}
+                            >
+                              Photos
+                            </a>
                           </li>
-                          {!strict && <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,location)}>Location</a>
-                          </li>}
-                          {!mls && !strict && <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,presentedBy)}>Presented By</a>
-                          </li>}
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, panorama)}
+                            >
+                              Panorama
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, video)}
+                            >
+                              Videos
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, floorPlan)}
+                            >
+                              Floor Plans
+                            </a>
+                          </li>
+                          {!strict && (
+                            <li>
+                              <a
+                                href="#"
+                                onClick={(e) => scrollToElement(e, location)}
+                              >
+                                Location
+                              </a>
+                            </li>
+                          )}
+                          {!mls && !strict && (
+                            <li>
+                              <a
+                                href="#"
+                                onClick={(e) => scrollToElement(e, presentedBy)}
+                              >
+                                Presented By
+                              </a>
+                            </li>
+                          )}
                           <li>
                             <a href="#">Details</a>
                             <ul>
@@ -524,7 +652,12 @@ export default function Themetemplate4(props) {
                             </ul>
                           </li>
                           <li>
-                            <a href="#" onClick={(e)=>scrollToElement(e,contact)}>Contact</a>
+                            <a
+                              href="#"
+                              onClick={(e) => scrollToElement(e, contact)}
+                            >
+                              Contact
+                            </a>
                             <ul>
                               <li>
                                 <a
@@ -628,23 +761,47 @@ export default function Themetemplate4(props) {
           class="carousel slide carousel-fade"
           data-ride="carousel"
         >
-          {imageData.length > 0 ? (
-            <OwlCarousel margin={10} {...options2}>
-              {imageData.map((res) => (
-                <div class="carousel-item active">
-                  <img src={res.imageurl} />
-                  <div class="container">
-                    <div class="carousel-caption">
-                      <h1>{res.caption}</h1>
+          {videoData.length > 0 ? (
+            <div className="top-video-holder" style={{ position: "relative" }}>
+              <video
+                src={videoData[0].videurl}
+                // onClick={(e) => e.target.play()}
+                autoPlay
+                muted={muted}
+                ref={topVideo}
+              />
+              <div className="muteIcon" onClick={() => setMuted(!muted)}>
+                {muted ? (
+                  <i class="fas fa-volume-mute"></i>
+                ) : (
+                  <i class="fas fa-volume-off"></i>
+                )}
+              </div>
+            </div>
+          ) : threeDs?.code1 || threeDs?.code2 ? (
+            <div
+              class="threeDContainer bannerTop"
+              dangerouslySetInnerHTML={{
+                __html: threeDs?.code1 ? threeDs?.code1 : threeDs?.code2,
+              }}
+            ></div>
+          ) : (
+            imageData.length > 0 && (
+              <OwlCarousel margin={10} {...options2}>
+                {imageData.map((res, i) => (
+                  <div key={i} class="carousel-item active">
+                    <img src={res.imageurl} />
+                    <div class="container">
+                      <div class="carousel-caption">
+                        <h1>{res.caption}</h1>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </OwlCarousel>
-          ) : (
-            ""
+                ))}
+              </OwlCarousel>
+            )
           )}
-          <div class="bannershape">
+          <div class="bannershape" style={{ opacity: " 0" }}>
             <img src={banner_c} alt="" />
           </div>
         </div>
@@ -654,7 +811,7 @@ export default function Themetemplate4(props) {
               <div class="full_width_inner">
                 <div class="frontext">
                   <div class="container">
-                    <div class="row second_section">
+                    <div class="row second_section m-0">
                       <div class="col-md-10 m-auto">
                         <a
                           href="javascript:void()"
@@ -686,270 +843,359 @@ export default function Themetemplate4(props) {
                 </div>
                 <hr class="spacer1px" />
                 {/* <!--============= Property Details ================--> */}
-                {!strict && <div class="property_details">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-md-8 m-auto">
-                        <div class="page_title">
-                          <h3>Property Details</h3>
-                        </div>
-                        <div class="property_details_left">
-                          <div class="row">
-                            <div class="col-sm-12 property_details_content">
-                              <ul>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Price</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Price === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {"$ " + tourDetailsData.Price}
-                                          </span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Bed</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 && tourDetailsData.Beds === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Beds}</span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
+                {!strict && (
+                  <div class="property_details">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-md-8 m-auto">
+                          <div class="page_title">
+                            <h3>Property Details</h3>
+                            <p className="mt-3">{tourData.description}</p>
+                          </div>
+                          <div class="property_details_left">
+                            <div class="row">
+                              <div class="col-sm-12 property_details_content">
+                                <ul>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Price</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Price === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {"$ " + tourDetailsData.Price}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Bed</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Beds === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.Beds}</span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
 
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Baths:</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Baths === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Baths}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Square Feet :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.InteriorSqFt ===
-                                          null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.InteriorSqFt}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Garage :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.Garage === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.Garage}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>Year Built :</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.YearBuilt === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.YearBuilt}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>Lot Size :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.LotSize === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.LotSize}</span>
-                                        )}
-                                      </td>
-                                      <td>
-                                        <strong>School District :</strong>
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        {Object.keys(tourDetailsData).length >
-                                          0 &&
-                                        tourDetailsData.SchoolDistrict ===
-                                          null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>
-                                            {tourDetailsData.SchoolDistrict}
-                                          </span>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                                <li>
-                                  <table
-                                    width="100%"
-                                    border="0"
-                                    cellspacing="0"
-                                    cellpadding="0"
-                                  >
-                                    <tr>
-                                      <td>
-                                        <strong>MLS# :</strong>
-                                      </td>
-                                      <td>
-                                        {Object.keys(tourDetailsData).length >
-                                          0 && tourDetailsData.MLS === null ? (
-                                          <span style={{ marginLeft: "10px" }}>
-                                            N/A
-                                          </span>
-                                        ) : (
-                                          <span>{tourDetailsData.MLS}</span>
-                                        )}
-                                      </td>
-                                      <td></td>
-                                      <td> </td>
-                                    </tr>
-                                  </table>
-                                </li>
-                              </ul>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Baths:</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Baths === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.Baths}</span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Square Feet :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.InteriorSqFt ===
+                                            null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.InteriorSqFt}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Garage :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.Garage === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.Garage}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>Year Built :</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.YearBuilt === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.YearBuilt}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>Lot Size :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.LotSize === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.LotSize}
+                                            </span>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <strong>School District :</strong>
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.SchoolDistrict ===
+                                            null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>
+                                              {tourDetailsData.SchoolDistrict}
+                                            </span>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                  <li>
+                                    <table
+                                      width="100%"
+                                      border="0"
+                                      cellspacing="0"
+                                      cellpadding="0"
+                                    >
+                                      <tr>
+                                        <td>
+                                          <strong>MLS# :</strong>
+                                        </td>
+                                        <td>
+                                          {Object.keys(tourDetailsData).length >
+                                            0 &&
+                                          tourDetailsData.MLS === null ? (
+                                            <span
+                                              style={{ marginLeft: "10px" }}
+                                            >
+                                              N/A
+                                            </span>
+                                          ) : (
+                                            <span>{tourDetailsData.MLS}</span>
+                                          )}
+                                        </td>
+                                        <td></td>
+                                        <td> </td>
+                                      </tr>
+                                    </table>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <hr class="spacer10px" />
-                        <div class="row">
-                          <div class="col-sm-12 text-center sharethis">
-                            <strong>Share This On</strong>
-                            <FacebookShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-facebook-f"></i>
-                            </FacebookShareButton>
-                            <LinkedinShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-linkedin-in"></i>
-                            </LinkedinShareButton>
-                            <WhatsappShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i
-                                style={{ backgroundColor: "rgb(37, 211, 102)" }}
-                                class="fab fa-whatsapp"
-                              ></i>
-                            </WhatsappShareButton>
-                            <TwitterShareButton
-                              url={
-                                "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
-                                ThemeId +
-                                AgnetID
-                              }
-                            >
-                              <i class="fab fa-twitter"></i>
-                            </TwitterShareButton>
+                          <hr class="spacer10px" />
+                          <div class="row">
+                            <div class="col-sm-12 text-center sharethis">
+                              <strong>Share This On</strong>
+                              <FacebookShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-facebook-f"></i>
+                              </FacebookShareButton>
+                              <LinkedinShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-linkedin-in"></i>
+                              </LinkedinShareButton>
+                              <WhatsappShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i
+                                  style={{
+                                    backgroundColor: "rgb(37, 211, 102)",
+                                  }}
+                                  class="fab fa-whatsapp"
+                                ></i>
+                              </WhatsappShareButton>
+                              <TwitterShareButton
+                                url={
+                                  "https://www.virtualtourcafe.com/alpha/tour/theme-template/" +
+                                  ThemeId +
+                                  AgnetID
+                                }
+                              >
+                                <i class="fab fa-twitter"></i>
+                              </TwitterShareButton>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>}
+                )}
                 <hr class="spacer1px" />
                 {/* <!--============= Photo Gallery ================--> */}
+                {documents && documents.length > 0 && (
+                  <div
+                    class="photogallery docs"
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Documents</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          {documents.map((res) => (
+                            <div class="col-md-4 col-sm-6 col-xs-12 m-auto">
+                              <div class="callbacks_container">
+                                <li>
+                                  <div class="gallerybox">
+                                    <div class="image-holder video-holder">
+                                      <img
+                                        src="https://virtualtourcafe.com/images/documents.png?1590647111"
+                                        style={{
+                                          marginTop: "0",
+                                          height: "100%",
+                                        }}
+                                      />
+                                      <span class="gallery_title">Doc</span>
+                                      <div class="overlay">
+                                        <div class="button">
+                                          <a
+                                            onClick={() =>
+                                              downloadDoc(
+                                                res.doc_link,
+                                                res.doc_name
+                                              )
+                                            }
+                                            data-title={res.doc_name}
+                                          >
+                                            <img src={zoomIcon} alt="" />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div
-                  class="photogallery"
+                  class="photogallery mxW"
                   id="photos"
                   ref={photos}
                   style={{
@@ -971,7 +1217,7 @@ export default function Themetemplate4(props) {
                       <div class="col-lg-12">
                         <OwlCarousel
                           margin={10}
-                          {...options}
+                          {...options3}
                           class="gallery-design1 owl-carousel"
                         >
                           {imageData.map((res) => (
@@ -1003,6 +1249,88 @@ export default function Themetemplate4(props) {
                     </div>
                   </div>
                 </div>
+                <div
+                  class="photogallery mxW threeDSection"
+                  id="photos"
+                  ref={photos}
+                >
+                  <div class="container">
+                    <div class="row">
+                      {threeDs?.code1 || threeDs?.code2 ? (
+                        <div
+                          class="bodycontent_gallery_centerbox threeDSection"
+                          id="videos"
+                        >
+                          <div class="page_title">
+                            <h3>3D WalkThrough</h3>
+                          </div>
+                          <hr class="spacer30px"></hr>
+
+                          <div
+                            class="threeDContainer"
+                            dangerouslySetInnerHTML={{
+                              __html: threeDs?.code1
+                                ? threeDs?.code1
+                                : threeDs?.code2,
+                            }}
+                          ></div>
+                          <hr class="spacer1px" />
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="spacer1px" />
+                {videoData && videoData.length > 0 && (
+                  <div
+                    class="photogallery docs"
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                    ref={video}
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Video Gallery</h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          {videoData.map((res) => (
+                            <div class="col-md-6 m-auto">
+                              <div class="callbacks_container mb-3">
+                                <li>
+                                  <div class="gallerybox">
+                                    <div class="image-holder video-holder">
+                                      <img src={res.thumbnail} alt="" />
+                                      <span class="gallery_title">Video</span>
+                                      <div class="overlay">
+                                        <div class="button">
+                                          <a onClick={() => setVideoModal(res)}>
+                                            <img src={playicon} alt="" />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <hr class="spacer1px" />
                 {/* <!--============= 3D Video ================--> */}
                 {/* <div class="video_3d">
@@ -1016,96 +1344,103 @@ export default function Themetemplate4(props) {
                                     </div>
                                 </div> */}
 
-                <div class="videogallery">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>Video Gallery</h3>
+                {floorPlanData.length > 0 ? (
+                  <div class="floorPlans" ref={floorPlans}>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Floor Plan</h3>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12">
-                        {videoData.map((res) => (
-                          <div class="col-md-6 m-auto">
-                            <div class="callbacks_container">
-                              <li>
-                                <div class="gallerybox">
-                                  <div class="image-holder">
-                                    <img
-                                      src={videobg}
-                                      alt="Services"
-                                      class="image"
-                                    />
-                                    <span class="gallery_title">Video</span>
-                                    <div class="overlay">
-                                      <div class="button">
-                                        <p>Title Goes Here</p>
-                                        <a
-                                          onClick={() =>
-                                            setVideoModal(res.videurl)
-                                          }
-                                          data-title="Title Goes Here"
-                                        >
-                                          <img src={playicon} alt="" />
-                                        </a>
-                                      </div>
-                                    </div>
+                      <div class="row carousel">
+                        <div class="col-md-offset-2 col-md-8 box-plan">
+                          <OwlCarousel
+                            margin={10}
+                            {...options}
+                            class="gallery-design1 owl-carousel"
+                          >
+                            {floorPlanData.map((res) => (
+                              <div
+                                class="gallerybox"
+                                onClick={() => ImageModal(res.imageurl)}
+                              >
+                                <div class="image-holder">
+                                  <div class="gallery_bgimage">
+                                    <img src={res.imageurl} alt="image01" />
                                   </div>
                                 </div>
-                              </li>
-                            </div>
-                          </div>
-                        ))}
+                              </div>
+                            ))}
+                          </OwlCarousel>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <hr class="spacer1px" />
+                ) : (
+                  ""
+                )}
+
                 {/* <!--============= Floor Plans Gallery ================--> */}
-                <div class="floorplans">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>Panorama Gallery</h3>
+                {panoromaData && panoromaData.length > 0 && (
+                  <div
+                    class="photogallery"
+                    id="photos"
+                    ref={panorama}
+                    style={{
+                      backgroundImage: "url(" + bg2 + ")",
+                      backgroundPosition: "fixed",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Panorama Gallery</h3>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      {panoromaData.map((res) => (
-                        <div class="col-md-6 m-auto">
-                          <div class="callbacks_container">
-                            <li
-                              data-src={res.panurl}
-                              data-sub-html="<p>trafficreport</p>"
-                            >
-                              <div class="gallerybox">
+                      <div class="row">
+                        <div class="col-lg-12 panoContent">
+                          <OwlCarousel
+                            margin={10}
+                            {...options3}
+                            loop={false}
+                            class="gallery-design1 owl-carousel"
+                          >
+                            {panoromaData.map((res) => (
+                              <div
+                                class="gallerybox"
+                                onClick={() => ImageModal(res.panurl)}
+                              >
                                 <div class="image-holder">
-                                  <a href={res.panurl}>
-                                    <img alt="img1" src={res.panurl} />
-                                  </a>
+                                  <div class="gallery_bgimage">
+                                    <img src={res.panurl} alt="image01" />
+                                  </div>
                                   <div class="overlay">
-                                    <div
-                                      class="button"
-                                      onClick={() => setPanoModal(res.panurl)}
-                                    >
-                                      <p>Title Goes Here</p>
-                                      <a href="#">
-                                        <img src={zoom} alt="" />
+                                    <div class="button">
+                                      <p>{res.caption}</p>
+                                      <a onClick={() => ImageModal(res.panurl)}>
+                                        <img
+                                          src={zoom2}
+                                          alt=""
+                                          style={{ width: "40px" }}
+                                        />
                                       </a>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </li>
-                          </div>
+                            ))}
+                          </OwlCarousel>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    </div>{" "}
                   </div>
-                </div>
+                )}
 
                 <hr class="spacer1px" />
 
@@ -1121,310 +1456,343 @@ export default function Themetemplate4(props) {
                   id="location"
                   ref={location}
                 >
-                  {!strict && <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title2">
-                          <h3>Property Location</h3>
+                  {!strict && (
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title2">
+                            <h3>Property Location</h3>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="googlemapframe">
-                          <div class="google-maps">
-                            <iframe
-                              src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                              width="100%"
-                              height="450"
-                              style={{ border: "0" }}
-                              allowfullscreen=""
-                              loading="lazy"
-                              referrerpolicy="no-referrer-when-downgrade"
-                            ></iframe>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="googlemapframe">
+                            <div class="google-maps">
+                              <iframe
+                                src="https://maps.google.com/maps?q=California&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                                width="100%"
+                                height="450"
+                                style={{ border: "0" }}
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                              ></iframe>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>}
+                  )}
                 </div>
                 <hr class="spacer1px" />
                 {/* <!--============= Presented By ================--> */}
-                {!mls && !strict && <div class="presentedby_main" id="Presented" ref={presentedBy}>
-                  <div class="presentedby">
-                    <div class="presentedby_left">
-                      <div class="page_title2">
-                        <h3>Presented by</h3>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-sm-4 agent_img">
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <img
-                              src={agentProfile.agent_profile.profile_img}
-                              alt=""
-                              title=""
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            <Skeleton variant="text" width={250} height={70} />
-                          )}
-                        </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h5>{agentProfile.agent_profile.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <h6>{agentProfile.company_details.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class="spacer1px" />
-
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-
-                          {Object.keys(agentProfile).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {agentProfile.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                        </div>
-                      </div>
-                      {Object.keys(coAgentData).length > 0 && <div class="row">
-                        <div class="col-sm-4 agent_img">
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <img
-                              src={coAgentData.profile_img}
-                              alt=""
-                              title=""
-                              style={{ width: "100%" }}
-                            />
-                          ) : (
-                            <Skeleton variant="text" width={250} height={70} />
-                          )}
-                        </div>
-                        <div class="col-sm-8 agent_sectionbody">
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h5>{coAgentData.name}</h5>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <h6>{coAgentData.company}</h6>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class="spacer1px" />
-
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.mobile}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-
-                          {Object.keys(coAgentData).length > 0 ? (
-                            <small>
-                              <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
-                              {coAgentData.email}
-                            </small>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              width={150}
-                              height={20}
-                              style={{ background: "#bbbbbb" }}
-                            />
-                          )}
-                          <hr class=" spacer20px" />
-                        </div>
-                      </div>}
-
-                      <hr class="spacer20px" />
-
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <a
-                            href={"mailto:" + coAgentData.email}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-envelope"></i> Email Me
-                          </a>
-                          <a
-                            href="javascript:void()"
-                            style={{ marginLeft: "10px" }}
-                            onClick={handleWebsite}
-                            class="agentbtn"
-                          >
-                            <i class="far fa-globe"></i> My Website
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="presentedby_right"
-                      style={{
-                        backgroundImage: "url(" + allpages + ")",
-                        backgroundPosition: "fixed",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                      }}
-                    >
-                      &nbsp;
-                    </div>
-                  </div>
-                </div>}
-                <hr class="spacer1px" />
-                {!mls && !strict && 
-                <div class="sendme_details" ref={contact}>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="page_title">
-                          <h3>
-                            Send Me Details And Market Information For This Home
-                          </h3>
+                {!mls && !strict && (
+                  <div
+                    class="presentedby_main"
+                    id="Presented"
+                    ref={presentedBy}
+                  >
+                    <div class="presentedby">
+                      <div class="presentedby_left">
+                        <div class="page_title2">
+                          <h3>Presented by</h3>
                         </div>
 
                         <div class="row">
-                          <div class="col-sm-8 presentedby_right_form">
-                            <form
-                              onSubmit={(event) => {
-                                event.preventDefault();
-                                sendMailAgent();
-                              }}
-                            >
-                              <ul>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="First Name *"
-                                    name="first_name"
-                                    value={sendMail.first_name}
-                                    class="presentedby_right_inputbox"
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="Last Name *"
-                                    class="presentedby_right_inputbox"
-                                    name="last_name"
-                                    value={sendMail.last_name}
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="email"
-                                    placeholder="Email *"
-                                    class="presentedby_right_inputbox"
-                                    name="contact_email"
-                                    value={sendMail.contact_email}
-                                    onChange={handleInputMailChange}
-                                  />
-                                </li>
-                                <li>
-                                  <input
-                                    type="text"
-                                    placeholder="Phone"
-                                    class="presentedby_right_inputbox"
-                                    name="phone"
-                                    value={sendMail.phone}
-                                    onChange={handleInputMailChange}
-                                  />{" "}
-                                </li>
-                                <li class="last">
-                                  <textarea
-                                    cols=""
-                                    rows=""
-                                    placeholder="Comments"
-                                    class="presentedby_right_inputbox"
-                                    name="comments"
-                                    value={sendMail.comments}
-                                    onChange={handleInputMailChange}
-                                  ></textarea>
-                                </li>
-                                <li>
-                                  <input
-                                    name=""
-                                    type="submit"
-                                    value="Send"
-                                    class="sendbtn"
-                                  />
-                                </li>
-                              </ul>
-                            </form>
+                          <div class="col-sm-4 agent_img">
+                            {Object.keys(agentProfile).length > 0 && tourData.useAgentPic == 1 ? (
+                              <img
+                                src={agentProfile.agent_profile.profile_img}
+                                alt=""
+                                title=""
+                              />
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={250}
+                                height={70}
+                              />
+                            )}
                           </div>
-                          <div class="col-sm-4 presentedby_right_img">
-                            <img src={vtcLogo} alt="" />
+                          <div class="col-sm-8 agent_sectionbody">
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <h5>{agentProfile.agent_profile.name}</h5>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class=" spacer20px" />
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <h6>{agentProfile.company_details.company}</h6>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            <hr class="spacer1px" />
+
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.mobile}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+
+                            {Object.keys(agentProfile).length > 0 ? (
+                              <small>
+                                <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                {agentProfile.email}
+                              </small>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                width={150}
+                                height={20}
+                                style={{ background: "#bbbbbb" }}
+                              />
+                            )}
+                            {tourData.announcements && Object.keys(tourData.announcements).length > 0 && <div className="tthree pull-left">
+                              <i class="fas fa-volume-up"></i>
+                              <a
+                                href="javascript:void(0);"
+                                onClick={() =>
+                                  setOpenHouseModal(!openHouseModal)
+                                }
+                              >
+                                Open House Announcement
+                              </a>
+                            </div>}
+                            <hr class=" spacer20px" />
+                          </div>
+                        </div>
+                        {Object.keys(coAgentData).length > 0 && (
+                          <div class="row">
+                            <div class="col-sm-4 agent_img">
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <img
+                                  src={coAgentData.profile_img}
+                                  alt=""
+                                  title=""
+                                />
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={250}
+                                  height={70}
+                                />
+                              )}
+                            </div>
+                            <div class="col-sm-8 agent_sectionbody">
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h5>{coAgentData.name}</h5>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <h6>{coAgentData.company}</h6>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class="spacer1px" />
+
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.mobile}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+
+                              {Object.keys(coAgentData).length > 0 ? (
+                                <small>
+                                  <i class="fa fa-id-card"></i>&nbsp;&nbsp;{" "}
+                                  {coAgentData.email}
+                                </small>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  width={150}
+                                  height={20}
+                                  style={{ background: "#bbbbbb" }}
+                                />
+                              )}
+                              <hr class=" spacer20px" />
+                            </div>
+                          </div>
+                        )}
+
+                        <hr class="spacer20px" />
+
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <a
+                              href={"mailto:" + coAgentData.email}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-envelope"></i> Email Me
+                            </a>
+                            <a
+                              href="javascript:void()"
+                              style={{ marginLeft: "10px" }}
+                              onClick={handleWebsite}
+                              class="agentbtn"
+                            >
+                              <i class="far fa-globe"></i> My Website
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="property_details_right">
+                        <img
+                          src={imageData[0]?.imageurl}
+                          alt="first pict"
+                          style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <hr class="spacer1px" />
+                {!mls && !strict && tourData.showleadcapture == 1 && (
+                  <div class="sendme_details" ref={contact}>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="page_title">
+                            <h3>
+                              Send Me Details And Market Information For This
+                              Home
+                            </h3>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-sm-8 presentedby_right_form">
+                              <form
+                                onSubmit={(event) => {
+                                  event.preventDefault();
+                                  sendMailAgent();
+                                }}
+                              >
+                                <ul>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="First Name *"
+                                      name="first_name"
+                                      value={sendMail.first_name}
+                                      class="presentedby_right_inputbox"
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="Last Name *"
+                                      class="presentedby_right_inputbox"
+                                      name="last_name"
+                                      value={sendMail.last_name}
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="email"
+                                      placeholder="Email *"
+                                      class="presentedby_right_inputbox"
+                                      name="contact_email"
+                                      value={sendMail.contact_email}
+                                      onChange={handleInputMailChange}
+                                    />
+                                  </li>
+                                  <li>
+                                    <input
+                                      type="text"
+                                      placeholder="Phone"
+                                      class="presentedby_right_inputbox"
+                                      name="phone"
+                                      value={sendMail.phone}
+                                      onChange={handleInputMailChange}
+                                    />{" "}
+                                  </li>
+                                  <li class="last">
+                                    <textarea
+                                      cols=""
+                                      rows=""
+                                      placeholder="Comments"
+                                      class="presentedby_right_inputbox"
+                                      name="comments"
+                                      value={sendMail.comments}
+                                      onChange={handleInputMailChange}
+                                    ></textarea>
+                                  </li>
+                                  <li>
+                                    <input
+                                      name=""
+                                      type="submit"
+                                      value="Send"
+                                      class="sendbtn"
+                                    />
+                                  </li>
+                                </ul>
+                              </form>
+                            </div>
+                            <div class="col-sm-4 presentedby_right_img">
+                              {tourData.useCompanyPic == 1 && (
+                                <img
+                                  src={agentProfile.company_details.companylogo}
+                                  alt=""
+                                />
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>}
+                )}
                 <div
                   class="bodycontent_footerbtm3"
                   style={{
                     backgroundImage: "url(" + footerbg + ")",
                     backgroundPosition: "fixed",
                     backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
                     position: "relative",
                     padding: "250px 0px 10px 0px",
                   }}
@@ -1467,7 +1835,7 @@ export default function Themetemplate4(props) {
         open={openPanoromaModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Panoroma Modal
+          Additional Panoroma Model
           <CancelIcon
             onClick={() => setOpenPanoromaModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2155,7 +2523,7 @@ export default function Themetemplate4(props) {
                   <div class="menu_opt_sec">
                     <div class="mar_top row">
                       {Object.keys(amenities).length > 0 &&
-                      amenities.appliances.length > 0 ? (
+                        amenities.appliances.length > 0 &&
                         amenities.appliances.map((res) => (
                           <div class="col-lg-4 col-md-4">
                             <div class="app_preview">
@@ -2164,19 +2532,7 @@ export default function Themetemplate4(props) {
                               </p>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
-                        </div>
-                      )}
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -2187,7 +2543,7 @@ export default function Themetemplate4(props) {
                   <div class="menu_opt_sec">
                     <div class="mar_top row">
                       {Object.keys(amenities).length > 0 &&
-                      amenities.community.length > 0 ? (
+                        amenities.community.length > 0 &&
                         amenities.community.map((res) => (
                           <div class="col-lg-4 col-md-4">
                             <div class="app_preview">
@@ -2196,19 +2552,7 @@ export default function Themetemplate4(props) {
                               </p>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
-                        </div>
-                      )}
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -2219,7 +2563,7 @@ export default function Themetemplate4(props) {
                   <div class="menu_opt_sec">
                     <div class="mar_top row">
                       {Object.keys(amenities).length > 0 &&
-                      amenities.exterior.length > 0 ? (
+                        amenities.exterior.length > 0 &&
                         amenities.exterior.map((res) => (
                           <div class="col-lg-4 col-md-4">
                             <div class="app_preview">
@@ -2228,19 +2572,7 @@ export default function Themetemplate4(props) {
                               </p>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
-                        </div>
-                      )}
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -2251,7 +2583,7 @@ export default function Themetemplate4(props) {
                   <div class="menu_opt_sec">
                     <div class="mar_top row">
                       {Object.keys(amenities).length > 0 &&
-                      amenities.interior.length > 0 ? (
+                        amenities.interior.length > 0 &&
                         amenities.interior.map((res) => (
                           <div class="col-lg-4 col-md-4">
                             <div class="app_preview">
@@ -2260,25 +2592,41 @@ export default function Themetemplate4(props) {
                               </p>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div class="col-lg-4 col-md-4">
-                          <div class="alert alert-success">
-                            <strong>No!</strong>
-                            <a href="#" class="alert-link">
-                              {" "}
-                              Amenities Found
-                            </a>
-                            .
-                          </div>
-                        </div>
-                      )}
+                        ))}
                     </div>
                   </div>
                 </div>
               </div>
             </form>
           </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        maxWidth={maxWidth}
+        fullWidth={true}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={openHouseModal}
+      >
+        <DialogTitle id="customized-dialog-title">
+          Open House Announcements
+          <CancelIcon
+            onClick={() => setOpenHouseModal(false)}
+            style={{ float: "right", cursor: "pointer" }}
+          />
+        </DialogTitle>
+        <DialogContent dividers>
+          <div class="popup-inner">
+            <div class="box-wrap">
+              <h4>Open House Announcement</h4>
+              <div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12">
+                <p>{`${tourData?.announcements?.announcedate},${tourData?.announcements?.fromtime},${tourData?.announcements?.fromampm},${tourData?.announcements?.totime},${tourData?.announcements?.toampm}`}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
         </DialogContent>
       </Dialog>
       <Dialog
@@ -2450,7 +2798,7 @@ export default function Themetemplate4(props) {
         open={openVideoModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional Video Modal
+          Additional Video Model
           <CancelIcon
             onClick={() => setOpenVideoModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2466,7 +2814,13 @@ export default function Themetemplate4(props) {
               alignItems: "center",
             }}
           >
-            <video src={videoUrl} width="100%" autoPlay />
+            <video
+              src={videoUrl.videurl}
+              width="100%"
+              autoPlay
+              muted={videoUrl.video_music_type == 1 ? false : true}
+              controls={videoUrl.video_music_type == 1 ? true : false}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -2537,7 +2891,7 @@ export default function Themetemplate4(props) {
         open={openImageModal}
       >
         <DialogTitle id="customized-dialog-title">
-          Additional image Modal
+          Additional image Model
           <CancelIcon
             onClick={() => setOpenImageModal(false)}
             style={{ float: "right", cursor: "pointer" }}
@@ -2583,3 +2937,36 @@ export default function Themetemplate4(props) {
     </>
   );
 }
+
+// =======================responsive navbar===============================
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    // only execute all the code below in client side
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
+// ===================--------------------end-----------==============

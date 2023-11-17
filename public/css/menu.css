@@ -109,12 +109,14 @@ display: inline-block;
   margin-right: 100%;
 }
 #cssmenu ul ul li a {
-  border-bottom: 1px solid rgba(27,27,27,0.1);
-  padding: 11px 15px;
-  width: 180px;
-  text-decoration: none;
-  color: #173F5E ;
-  background: #fff;text-align: left; font-size: 13px;
+    border-bottom: 1px solid rgba(27,27,27,0.1);
+    padding: 9px 15px;
+    width: 180px;
+    text-decoration: none;
+    color: #173F5E;
+    background: #fff;
+    text-align: left;
+    font-size: 9px;
 }
 #cssmenu ul ul li:last-child > a,
 #cssmenu ul ul li.last-item > a {
@@ -226,7 +228,7 @@ text-transform: uppercase;
 font-weight: 700;
 z-index: 99;
 position: fixed;
-top: 28px;
+top: 0px;
 right:0px;
 width: 35px;
 height: 35px;
@@ -356,7 +358,7 @@ body.body_arabic #cssmenu ul ul li a:hover {border-left: 0px solid #4b7daa;borde
 
 }
 @media only screen and (min-width:1200px) and (max-width:1300px) {
-#cssmenu > ul > li > a {padding:15px 10px;font-size: 14px;}
+#cssmenu > ul > li > a {padding:8px 10px;font-size: 14px;}
 
 
 
@@ -383,10 +385,14 @@ body.body_arabic #cssmenu > ul > li.has-sub > a::after {margin-top: 4px;}
 #cssmenu ul ul {border-top: 0px solid #e9931a;}
 .col-md-8.col-lg-8.topbar_bottm {padding-left: 15px;}
 #cssmenu.small-screen ul ul li:hover > a, #cssmenu.small-screen ul ul li.active > a {color: #1B1B1B;}
-#cssmenu.small-screen > ul {background: #fff;z-index: 99; position:absolute; top: 26px;text-align: left;}
+#cssmenu.small-screen > ul {background: #fff;z-index: 99; position:absolute; top: 5px;text-align: left;}
 #cssmenu > ul > li::after { display:none;}
 .showmob-link{display:block !important;}
 #cssmenu > ul > li:hover:before {width:100%;left: 0; display:none;}
 
 
+}
+.theme-two #cssmenu > ul > li > a {
+  padding: 12px 5px;
+  font-size: 11px;
 }

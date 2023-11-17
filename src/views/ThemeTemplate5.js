@@ -69,6 +69,7 @@ export default function ThemeTemplate5(props) {
   const AgentId = props.agentId;
   const ThemeId = props.themeId;
   const tourid = props.tourid;
+  const documents = props.documents;
   // const AgnetID = props.AgentId;
   // const ThemeId = props.ThemeId;
   // const agentProfile = props.agentProfile;
@@ -304,7 +305,7 @@ export default function ThemeTemplate5(props) {
   const viewFlyer = () => {
     // history.push(APIPath() + "agent-view-flyer-active/" + tourid + "/" + AgentId);
     window.open(
-      APIPath() + "agent-view-flyer-active/" + tourid + "/" + AgentId,
+      "https://www.virtualtourcafe.com/alpha/site/flyer/" + tourid,
       "_blank"
     );
   };
